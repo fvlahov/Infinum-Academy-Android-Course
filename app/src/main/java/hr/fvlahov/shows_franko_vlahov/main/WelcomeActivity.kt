@@ -6,13 +6,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import hr.fvlahov.shows_franko_vlahov.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class WelcomeActivity : AppCompatActivity() {
 
     companion object{
         private const val EXTRA_EMAIL = "EXTRA_EMAIL"
 
         fun buildIntent(activity: Activity, email: String) : Intent {
-            val intent = Intent(activity, MainActivity::class.java)
+            val intent = Intent(activity, WelcomeActivity::class.java)
             intent.putExtra(EXTRA_EMAIL, email)
             return intent
         }

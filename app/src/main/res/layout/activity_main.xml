@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".main.MainActivity">
+    tools:context=".main.WelcomeActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_logo"
@@ -43,7 +43,8 @@
         android:id="@+id/tv_Welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome, "
+        android:layout_marginTop="31dp"
+        android:text="@string/welcome"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cl_logo" />
