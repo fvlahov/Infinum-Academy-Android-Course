@@ -5,96 +5,274 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/purple_background"
-    android:paddingLeft="@dimen/activity_login_defaultLeftRightPadding"
-    android:paddingRight="@dimen/activity_login_defaultLeftRightPadding"
-    android:paddingBottom="@dimen/activity_login_defaultTopBottomPadding"
-    android:paddingTop="@dimen/activity_login_defaultTopBottomPadding"
     tools:context=".login.LoginActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:src="@drawable/semicircle_aqua"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="56dp"
+        android:layout_marginTop="35dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ellipse_white"/>
+            android:id="@+id/activity_login_iv_circleWhite"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:src="@drawable/ellipse_white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/activity_login_iv_rectangleOrange"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/rectangle_orange"
+            app:layout_constraintStart_toEndOf="@id/activity_login_iv_circleWhite"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/activity_login_ll_arrows"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginEnd="7dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/activity_login_iv_rectangle_aqua"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/arrowright_white" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/arrowright_white" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/activity_login_iv_rectangle_aqua"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="7dp"
+            android:src="@drawable/rectangle_aqua"
+            app:layout_constraintEnd_toStartOf="@id/activity_login_ll_hamburger"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/activity_login_iv_rectangleGreen"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="56dp"
+            android:src="@drawable/rectangle_green"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <!-- Hamburger shapes -->
+        <LinearLayout
+            android:id="@+id/activity_login_ll_hamburger"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/activity_login_iv_rectangleGreen"
+            app:layout_constraintStart_toStartOf="@id/activity_login_iv_rectangleGreen"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/rectangle_whitesmall" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:src="@drawable/rectangle_whitesmall" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/rectangle_whitesmall" />
+        </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-    <TextView
-        android:id="@+id/tv_LoginText"
-        android:layout_width="0dp"
+    <ImageView
+        android:id="@+id/activity_login_iv_rectangleLargeOrange"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/login"
-        android:textColor="@color/white"
-        android:textSize="30sp"
-        android:textStyle="bold"
+        android:src="@drawable/rectangle_large_orange"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/activity_login_iv_semiCircleOrange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/semicircle_orange"
+        app:layout_constraintBottom_toBottomOf="@id/activity_login_iv_rectangleLargeOrange"
+        app:layout_constraintEnd_toStartOf="@id/activity_login_iv_rectangleLargeOrange" />
+
+    <ImageView
+        android:id="@+id/activity_login_iv_circleGreen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/circle_green"
+        app:layout_constraintBottom_toBottomOf="@id/activity_login_iv_rectangleLargeOrange"
+        app:layout_constraintEnd_toEndOf="@id/activity_login_iv_rectangleLargeOrange"
+        app:layout_constraintStart_toStartOf="@id/activity_login_iv_semiCircleOrange"
+        app:layout_constraintTop_toBottomOf="@id/activity_login_iv_semiCircleOrange" />
+
+    <ImageView
+        android:id="@+id/activity_login_iv_threeQuarterCircleWhite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/threequartercircle_white"
+        app:layout_constraintBottom_toBottomOf="@id/activity_login_iv_rectangleLargeOrange"
+        app:layout_constraintEnd_toEndOf="@id/activity_login_iv_rectangleLargeOrange"
+        app:layout_constraintStart_toStartOf="@id/activity_login_iv_semiCircleOrange"
+        app:layout_constraintTop_toBottomOf="@id/activity_login_iv_semiCircleOrange" />
+
+    <ImageView
+        android:id="@+id/activity_login_iv_arrowRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/arrowright_white"
+        app:layout_constraintBottom_toBottomOf="@id/activity_login_iv_threeQuarterCircleWhite"
+        app:layout_constraintEnd_toEndOf="@id/activity_login_iv_threeQuarterCircleWhite"
+        app:layout_constraintStart_toStartOf="@id/activity_login_iv_threeQuarterCircleWhite"
+        app:layout_constraintTop_toBottomOf="@id/activity_login_iv_threeQuarterCircleWhite" />
+
+    <ImageView
+        android:id="@+id/activity_login_iv_rectanglerounded_aqua"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/rectanglerounded_aqua"
+        app:layout_constraintBottom_toBottomOf="@id/activity_login_iv_rectangleLargeOrange"
+        app:layout_constraintEnd_toEndOf="@id/activity_login_iv_threeQuarterCircleWhite"
+        app:layout_constraintStart_toStartOf="@id/activity_login_iv_threeQuarterCircleWhite"
+        app:layout_constraintTop_toTopOf="@id/activity_login_iv_rectangleLargeOrange" />
+
+    <ImageView
+        android:id="@+id/activity_login_iv_rectanglecurved_white_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/rectanglecurved_white"
+        app:layout_constraintStart_toStartOf="@id/activity_login_iv_rectanglerounded_aqua"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/activity_login_iv_rectanglecurved_white_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:src="@drawable/rectanglecurved_white"
+        app:layout_constraintEnd_toEndOf="@id/activity_login_iv_rectangleLargeOrange"
+        app:layout_constraintStart_toStartOf="@id/activity_login_iv_semiCircleOrange"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <!-- Input elements and text views -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:paddingLeft="@dimen/activity_login_defaultLeftRightPadding"
+        android:paddingTop="@dimen/activity_login_defaultTopBottomPadding"
+        android:paddingRight="@dimen/activity_login_defaultLeftRightPadding"
+        android:paddingBottom="@dimen/activity_login_defaultTopBottomPadding"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/tv_PleaseLogin"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/in_order_to_continue_please_log_in"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_LoginText" />
+        <TextView
+            android:id="@+id/tv_LoginText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/login"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/il_Email"
-        style="@style/WhiteTextInputLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/email"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_PleaseLogin">
+        <TextView
+            android:id="@+id/tv_PleaseLogin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_login_view_margin_top"
+            android:text="@string/in_order_to_continue_please_log_in"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_LoginText" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/iet_Email"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/il_Email"
+            style="@style/WhiteTextInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_login_view_margin_top"
+            android:hint="@string/email"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_PleaseLogin">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/iet_Email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/white" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/il_Password"
+            style="@style/WhiteTextInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_login_view_margin_top"
+            android:hint="@string/password"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/il_Email"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/iet_Password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:textColor="@color/white" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <Button
+            android:id="@+id/btn_Login"
+            style="@style/WhiteButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
-            android:textColor="@color/white" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/il_Password"
-        style="@style/WhiteTextInputLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/il_Email"
-        app:passwordToggleEnabled="true">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/iet_Password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:textColor="@color/white" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-
-    <Button
-        android:id="@+id/btn_Login"
-        style="@style/WhiteButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="@string/login"
-        android:textAllCaps="false"
-        app:layout_constraintBottom_toBottomOf="parent" />
-    <!--TODO: Fix background color for enabled/disabled -->
-
+            android:enabled="false"
+            android:text="@string/login"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent" />
+        <!--TODO: Fix background color for enabled/disabled -->
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

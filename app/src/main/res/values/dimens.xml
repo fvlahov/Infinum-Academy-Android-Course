@@ -3,4 +3,5 @@
     <dimen name="activity_login_defaultLeftRightPadding">25dp</dimen>
     <dimen name="activity_login_defaultTopBottomPadding">30dp</dimen>
     <dimen name="btn_corner_radius">24dp</dimen>
+    <dimen name="activity_login_view_margin_top">16dp</dimen>
 </resources>
