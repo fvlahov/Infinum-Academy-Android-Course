@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import hr.fvlahov.shows_franko_vlahov.databinding.ActivityMainBinding
+import hr.fvlahov.shows_franko_vlahov.databinding.ActivityWelcomeBinding
 
 class WelcomeActivity : AppCompatActivity() {
 
@@ -18,18 +18,19 @@ class WelcomeActivity : AppCompatActivity() {
         }
     }
 
-    private lateinit var binding : ActivityMainBinding
+    private lateinit var binding : ActivityWelcomeBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityWelcomeBinding.inflate(layoutInflater)
         val root = binding.root
         setContentView(root)
 
         val email = intent.extras?.getString(EXTRA_EMAIL) ?: "User"
         val name = email.substringBefore('@')
+        val welcomeText = binding.tvWelcome.text.toString().plus(name).plus("!")
 
-        binding.tvWelcome.text = binding.tvWelcome.text.toString().plus(email).plus("!")
+        binding.tvWelcome.text = welcomeText
     }
 }
