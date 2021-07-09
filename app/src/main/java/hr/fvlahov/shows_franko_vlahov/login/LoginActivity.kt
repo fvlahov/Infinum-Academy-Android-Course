@@ -1,12 +1,11 @@
 package hr.fvlahov.shows_franko_vlahov.login
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
-import hr.fvlahov.shows_franko_vlahov.welcome.WelcomeActivity
 import hr.fvlahov.shows_franko_vlahov.databinding.ActivityLoginBinding
+import hr.fvlahov.shows_franko_vlahov.welcome.WelcomeActivity
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
@@ -14,7 +13,9 @@ class LoginActivity : AppCompatActivity() {
     private val minEmailLength = 1
     private val minPasswordLength = 6
 
-    private val emailErrorMessage = "Enter a valid email address!"
+    private val emailInvalidMessage = "Enter a valid email address!"
+    private val emailNotRecognizedMessage = "Email not recognized!"
+    private val emailPasswordCombinationErrorMessage = "Email and password combination not recognized!"
 
     private val emailRegex : Regex = "(?:[a-z0-9!#\$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#\$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])".toRegex()
 
@@ -47,7 +48,7 @@ class LoginActivity : AppCompatActivity() {
         binding.activityLoginIetEmail.addTextChangedListener { emailPasswordTextChangeListener() }
         binding.activityLoginIetPassword.addTextChangedListener { emailPasswordTextChangeListener() }
 
-        //Shows navigation if email or password input is in focus and the keyboard is open
+        //Shows navigation if email or password input is in focus which means the keyboard is open
         binding.activityLoginIetEmail.setOnFocusChangeListener { _, hasFocus -> setNavigationVisibility(hasFocus) }
         binding.activityLoginIetPassword.setOnFocusChangeListener { _, hasFocus -> setNavigationVisibility(hasFocus) }
     }
@@ -63,9 +64,9 @@ class LoginActivity : AppCompatActivity() {
     private fun initLoginButton() {
         binding.activityLoginBtnLogin.setOnClickListener {
             if (validateEmail()) {
-                startWelcomeActivity()
+                attemptLogin()
             } else {
-                showEmailErrorMessage()
+                showEmailErrorMessage(emailInvalidMessage)
             }
         }
     }
@@ -79,11 +80,26 @@ class LoginActivity : AppCompatActivity() {
         //return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 
-    private fun showEmailErrorMessage(){
-        binding.activityLoginIlEmail.error = emailErrorMessage
+    private fun showEmailErrorMessage(message: String){
+        binding.activityLoginIlEmail.error = message
+    }
+
+    private fun attemptLogin() {
+        //TODO: Check email and password
+        val canLogin = true
+        if(canLogin){
+            startWelcomeActivity()
+        }
+        else{
+            //TODO: Show appropriate error message
+        }
     }
 
     private fun startWelcomeActivity(){
+        /*intent = Intent(Intent.NESTO)
+        intent.setData(Uri.parse("MOJ URL?"))
+        startActivity(intent)*/
+
         val intent = WelcomeActivity.buildIntent(
                 this,
                 binding.activityLoginIetEmail.text.toString()
