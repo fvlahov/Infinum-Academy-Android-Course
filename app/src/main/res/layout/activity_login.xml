@@ -233,7 +233,8 @@
             android:hint="@string/email"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_PleaseLogin">
+            app:layout_constraintTop_toBottomOf="@id/tv_PleaseLogin"
+            app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/iet_Email"

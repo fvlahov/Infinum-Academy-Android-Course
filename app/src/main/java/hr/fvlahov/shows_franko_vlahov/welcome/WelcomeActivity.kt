@@ -1,4 +1,4 @@
-package hr.fvlahov.shows_franko_vlahov.main
+package hr.fvlahov.shows_franko_vlahov.welcome
 
 import android.app.Activity
 import android.content.Intent
@@ -27,8 +27,9 @@ class WelcomeActivity : AppCompatActivity() {
         val root = binding.root
         setContentView(root)
 
-        val email = intent.extras?.getString(EXTRA_EMAIL).plus("!")
+        val email = intent.extras?.getString(EXTRA_EMAIL) ?: "User"
+        val name = email.substringBefore('@')
 
-        binding.tvWelcome.text = binding.tvWelcome.text.toString().plus(email)
+        binding.tvWelcome.text = binding.tvWelcome.text.toString().plus(email).plus("!")
     }
 }
