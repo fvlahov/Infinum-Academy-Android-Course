@@ -12,5 +12,6 @@
     <color name="aqua">#3EB2C3</color>
     <color name="orange_700">#DC001E</color>
     <color name="orange_200">#FC9B00</color>
+    <color name="gray_disabled">#BBBBBB</color>
     <color name="mtrl_textinput_default_box_stroke_color">@color/white</color>
 </resources>

@@ -5,7 +5,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/purple_background"
-    tools:context=".LoginActivity">
+    android:paddingLeft="@dimen/activity_login_defaultLeftRightPadding"
+    android:paddingRight="@dimen/activity_login_defaultLeftRightPadding"
+    android:paddingBottom="@dimen/activity_login_defaultTopBottomPadding"
+    android:paddingTop="@dimen/activity_login_defaultTopBottomPadding"
+    tools:context=".login.LoginActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ellipse_white"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <TextView
         android:id="@+id/tv_LoginText"
@@ -13,6 +31,8 @@
         android:layout_height="wrap_content"
         android:text="@string/login"
         android:textColor="@color/white"
+        android:textSize="30sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,6 +62,7 @@
             android:id="@+id/iet_Email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
             android:textColor="@color/white" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -60,16 +81,20 @@
             android:id="@+id/iet_Password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:textColor="@color/white" />
     </com.google.android.material.textfield.TextInputLayout>
 
 
     <Button
         android:id="@+id/btn_Login"
+        style="@style/WhiteButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_corners"
+        android:enabled="false"
         android:text="@string/login"
         android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent" />
+    <!--TODO: Fix background color for enabled/disabled -->
+
 </androidx.constraintlayout.widget.ConstraintLayout>

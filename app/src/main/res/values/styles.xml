@@ -4,5 +4,11 @@
         <item name="boxStrokeColor">@color/white</item>
         <item name="passwordToggleTint">@color/white</item>
         <item name="android:textColorHint">@color/white</item>
+        <item name="hintTextColor">@color/white</item>
+    </style>
+
+    <style name="WhiteButton" parent="Widget.AppCompat.Button">
+        <item name="android:textColor">@drawable/btn_white_text_color</item>
+        <item name="android:background">@drawable/btn_white_selector</item>
     </style>
 </resources>

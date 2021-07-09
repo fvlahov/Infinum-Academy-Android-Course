@@ -1,4 +1,4 @@
-package hr.fvlahov.shows_franko_vlahov
+package hr.fvlahov.shows_franko_vlahov.main
 
 import android.app.Activity
 import android.content.Intent
@@ -25,7 +25,10 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         val root = binding.root
-
         setContentView(root)
+
+        val email = intent.extras?.getString(EXTRA_EMAIL).plus("!")
+
+        binding.tvWelcome.text = binding.tvWelcome.text.toString().plus(email)
     }
 }
