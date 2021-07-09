@@ -29,8 +29,8 @@ class WelcomeActivity : AppCompatActivity() {
 
         val email = intent.extras?.getString(EXTRA_EMAIL) ?: "User"
         val name = email.substringBefore('@')
-        val welcomeText = binding.tvWelcome.text.toString().plus(name).plus("!")
+        val welcomeText = binding.activityWelcomeTvWelcome.text.toString().plus(" ").plus(name).plus("!")
 
-        binding.tvWelcome.text = welcomeText
+        binding.activityWelcomeTvWelcome.text = welcomeText
     }
 }

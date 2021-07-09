@@ -6,47 +6,26 @@
     android:layout_height="match_parent"
     tools:context=".welcome.WelcomeActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_logo"
-        android:layout_width="128dp"
-        android:layout_height="128dp"
+    <ImageView
+        android:id="@+id/activity_welcome_iv_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/purple_background"
+        android:src="@drawable/ic_welcome_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/iv_Circle"
-            android:layout_width="128dp"
-            android:layout_height="128dp"
-            android:backgroundTint="@color/purple_background"
-            android:src="@drawable/ellipse_purple"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/iv_Triangle"
-            android:layout_width="57dp"
-            android:layout_height="64dp"
-            android:backgroundTint="@color/purple_background"
-            android:src="@drawable/triangle"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <TextView
-        android:id="@+id/tv_Welcome"
+        android:id="@+id/activity_welcome_tv_welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="31dp"
         android:text="@string/welcome"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cl_logo" />
+        app:layout_constraintTop_toBottomOf="@id/activity_welcome_iv_logo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

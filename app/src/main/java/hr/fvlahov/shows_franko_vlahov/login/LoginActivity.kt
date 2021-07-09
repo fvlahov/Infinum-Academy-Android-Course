@@ -44,24 +44,24 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun initInputs() {
-        binding.ietEmail.addTextChangedListener { emailPasswordTextChangeListener() }
-        binding.ietPassword.addTextChangedListener { emailPasswordTextChangeListener() }
+        binding.activityLoginIetEmail.addTextChangedListener { emailPasswordTextChangeListener() }
+        binding.activityLoginIetPassword.addTextChangedListener { emailPasswordTextChangeListener() }
 
         //Shows navigation if email or password input is in focus and the keyboard is open
-        binding.ietEmail.setOnFocusChangeListener { _, hasFocus -> setNavigationVisibility(hasFocus) }
-        binding.ietPassword.setOnFocusChangeListener { _, hasFocus -> setNavigationVisibility(hasFocus) }
+        binding.activityLoginIetEmail.setOnFocusChangeListener { _, hasFocus -> setNavigationVisibility(hasFocus) }
+        binding.activityLoginIetPassword.setOnFocusChangeListener { _, hasFocus -> setNavigationVisibility(hasFocus) }
     }
 
     private fun emailPasswordTextChangeListener() {
-        val emailLength = binding.ietEmail.text?.length ?: 0
-        val passwordLength = binding.ietPassword.text?.length ?: 0
+        val emailLength = binding.activityLoginIetEmail.text?.length ?: 0
+        val passwordLength = binding.activityLoginIetPassword.text?.length ?: 0
 
         val loginEnabled = emailLength >= minEmailLength && passwordLength >= minPasswordLength
-        binding.btnLogin.isEnabled = loginEnabled
+        binding.activityLoginBtnLogin.isEnabled = loginEnabled
     }
 
     private fun initLoginButton() {
-        binding.btnLogin.setOnClickListener {
+        binding.activityLoginBtnLogin.setOnClickListener {
             if (validateEmail()) {
                 startWelcomeActivity()
             } else {
@@ -71,7 +71,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun validateEmail(): Boolean {
-        val target = binding.ietEmail.text.toString()
+        val target = binding.activityLoginIetEmail.text.toString()
 
         return emailRegex.matches(target)
 
@@ -80,13 +80,13 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun showEmailErrorMessage(){
-        binding.ilEmail.error = emailErrorMessage
+        binding.activityLoginIlEmail.error = emailErrorMessage
     }
 
     private fun startWelcomeActivity(){
         val intent = WelcomeActivity.buildIntent(
                 this,
-                binding.ietEmail.text.toString()
+                binding.activityLoginIetEmail.text.toString()
         )
         startActivity(intent)
     }

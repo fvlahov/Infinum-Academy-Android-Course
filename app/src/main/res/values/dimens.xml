@@ -4,4 +4,5 @@
     <dimen name="activity_login_defaultTopBottomPadding">30dp</dimen>
     <dimen name="btn_corner_radius">24dp</dimen>
     <dimen name="activity_login_view_margin_top">16dp</dimen>
+    <dimen name="largerText">30sp</dimen>
 </resources>
