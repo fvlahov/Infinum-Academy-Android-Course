@@ -33,8 +33,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     // Deprecated, but couldn't find any other way to hide navigation and notification drawer
-    private fun setNavigationVisibility(newVisible: Boolean) {
-        if (newVisible) {
+    private fun setNavigationVisibility(inFocus: Boolean) {
+        if (inFocus) {
             window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
         } else {
             window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
@@ -45,24 +45,24 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun initInputs() {
-        binding.activityLoginIetEmail.addTextChangedListener { emailPasswordTextChangeListener() }
-        binding.activityLoginIetPassword.addTextChangedListener { emailPasswordTextChangeListener() }
+        binding.inputEmail.addTextChangedListener { onEmailPasswordTextChanged() }
+        binding.inputPassword.addTextChangedListener { onEmailPasswordTextChanged() }
 
         //Shows navigation if email or password input is in focus which means the keyboard is open
-        binding.activityLoginIetEmail.setOnFocusChangeListener { _, hasFocus -> setNavigationVisibility(hasFocus) }
-        binding.activityLoginIetPassword.setOnFocusChangeListener { _, hasFocus -> setNavigationVisibility(hasFocus) }
+        binding.inputEmail.setOnFocusChangeListener { _, hasFocus -> setNavigationVisibility(hasFocus) }
+        binding.inputPassword.setOnFocusChangeListener { _, hasFocus -> setNavigationVisibility(hasFocus) }
     }
 
-    private fun emailPasswordTextChangeListener() {
-        val emailLength = binding.activityLoginIetEmail.text?.length ?: 0
-        val passwordLength = binding.activityLoginIetPassword.text?.length ?: 0
+    private fun onEmailPasswordTextChanged() {
+        val emailLength = binding.inputEmail.text?.length ?: 0
+        val passwordLength = binding.inputPassword.text?.length ?: 0
 
         val loginEnabled = emailLength >= minEmailLength && passwordLength >= minPasswordLength
-        binding.activityLoginBtnLogin.isEnabled = loginEnabled
+        binding.buttonLogin.isEnabled = loginEnabled
     }
 
     private fun initLoginButton() {
-        binding.activityLoginBtnLogin.setOnClickListener {
+        binding.buttonLogin.setOnClickListener {
             if (validateEmail()) {
                 attemptLogin()
             } else {
@@ -72,7 +72,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun validateEmail(): Boolean {
-        val target = binding.activityLoginIetEmail.text.toString()
+        val target = binding.inputEmail.text.toString()
 
         return emailRegex.matches(target)
 
@@ -81,7 +81,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun showEmailErrorMessage(message: String){
-        binding.activityLoginIlEmail.error = message
+        binding.containerEmail.error = message
     }
 
     private fun attemptLogin() {
@@ -102,7 +102,7 @@ class LoginActivity : AppCompatActivity() {
 
         val intent = WelcomeActivity.buildIntent(
                 this,
-                binding.activityLoginIetEmail.text.toString()
+                binding.inputEmail.text.toString()
         )
         startActivity(intent)
     }
