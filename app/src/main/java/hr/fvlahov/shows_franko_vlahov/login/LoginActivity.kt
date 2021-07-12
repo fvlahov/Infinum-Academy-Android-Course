@@ -34,8 +34,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     // Deprecated, but couldn't find any other way to hide navigation and notification drawer
-    private fun setNavigationVisibility(inFocus: Boolean) {
-        if (inFocus) {
+    private fun setNavigationVisibility(navigationVisibility: Boolean) {
+        if (navigationVisibility) {
             window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
         } else {
             window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
