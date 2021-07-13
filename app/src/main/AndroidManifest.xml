@@ -9,7 +9,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ShowsFranko_Vlahov">
-        <activity android:name=".welcome.WelcomeActivity"/>
+        <activity android:name=".shows.ShowsActivity"/>
+
+        <activity android:name=".welcome.WelcomeActivity">
+            <intent-filter>
+                <action android:name="hr.fvlahov.welcomeIntent" />
+                <!-- <action android:name="android.intent.action.VIEW" /> -->
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
