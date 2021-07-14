@@ -9,8 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ShowsFranko_Vlahov">
-        <activity android:name=".shows.ShowsActivity"/>
-
+        <activity android:name=".show_details.ShowDetailsActivity"></activity>
+        <activity android:name=".shows.ShowsActivity" />
         <activity android:name=".welcome.WelcomeActivity">
             <intent-filter>
                 <action android:name="hr.fvlahov.welcomeIntent" />

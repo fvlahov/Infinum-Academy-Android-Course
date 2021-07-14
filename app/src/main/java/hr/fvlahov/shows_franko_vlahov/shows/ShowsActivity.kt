@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import hr.fvlahov.shows_franko_vlahov.R
 import hr.fvlahov.shows_franko_vlahov.databinding.ActivityShowsBinding
 import hr.fvlahov.shows_franko_vlahov.model.Show
+import hr.fvlahov.shows_franko_vlahov.show_details.ShowDetailsActivity
 
 class ShowsActivity : AppCompatActivity() {
 
@@ -74,6 +75,10 @@ class ShowsActivity : AppCompatActivity() {
     }
 
     private fun onShowClicked(show: Show) {
-
+        val intent = ShowDetailsActivity.buildIntent(
+            this,
+            show
+        )
+        startActivity(intent)
     }
 }
