@@ -11,4 +11,9 @@
         <item name="android:textColor">@drawable/btn_white_text_color</item>
         <item name="android:background">@drawable/btn_white_selector</item>
     </style>
+
+    <style name="TextLarge" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">@dimen/largerText</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>

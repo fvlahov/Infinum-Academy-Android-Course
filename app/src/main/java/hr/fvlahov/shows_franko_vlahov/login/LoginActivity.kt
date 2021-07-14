@@ -1,14 +1,11 @@
 package hr.fvlahov.shows_franko_vlahov.login
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import hr.fvlahov.shows_franko_vlahov.databinding.ActivityLoginBinding
-import hr.fvlahov.shows_franko_vlahov.welcome.WelcomeActivity
-import java.lang.Exception
+import hr.fvlahov.shows_franko_vlahov.shows.ShowsActivity
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
@@ -108,23 +105,9 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun startWelcomeActivity() {
-        val welcomeIntent = Intent("hr.fvlahov.welcomeIntent")
-
-        try {
-            //welcomeIntent.setData(Uri.parse(binding.inputEmail.text.toString()))
-            startActivity(welcomeIntent)
-        }
-        catch (e: Exception){
-            val intent = WelcomeActivity.buildIntent(
-                this,
-                binding.inputEmail.text.toString()
-            )
-            startActivity(intent)
-        }
-        //Implicit
-
-
-        //Explicit
-
+        val intent = ShowsActivity.buildIntent(
+            this
+        )
+        startActivity(intent)
     }
 }
