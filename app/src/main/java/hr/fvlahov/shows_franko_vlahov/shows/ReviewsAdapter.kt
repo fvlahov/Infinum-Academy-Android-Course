@@ -36,7 +36,7 @@ class ReviewsAdapter(
     inner class ReviewViewHolder(private val binding: ItemReviewBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Review){
             binding.labelReview.text = item.review
-
+            binding.labelReview.visibility = if(item.review.isEmpty()) View.GONE else View.VISIBLE
             binding.labelReviewerName.text = item.reviewerName
             binding.imageReviewer.setImageResource(item.reviewerImageResourceId)
             binding.labelRating.text = item.rating.toString()

@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--For some reason layout_width is always set to wrap content even though it is match parent
+    When the review description is less than the width of the parent, everything shrinks.-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"

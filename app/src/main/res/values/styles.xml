@@ -6,6 +6,11 @@
         <item name="android:textColorHint">@color/white</item>
         <item name="hintTextColor">@color/white</item>
     </style>
+    <style name="PurpleTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="strokeColor">@color/purple_background</item>
+        <item name="android:textColorHint">@color/purple_background</item>
+        <item name="hintTextColor">@color/purple_background</item>
+    </style>
 
     <style name="WhiteButton" parent="Widget.AppCompat.Button">
         <item name="android:textColor">@drawable/btn_white_text_color</item>
@@ -21,7 +26,11 @@
         <item name="cornerSize">50%</item>
         <item name="background">@color/transparent</item>
     </style>
-    <style name="RatingBar" parent="Widget.AppCompat.RatingBar.Indicator">
+    <style name="RatingBarIndicator" parent="Widget.AppCompat.RatingBar.Indicator">
+        <item name="colorControlActivated">@color/purple_background</item>
+        <item name="colorControlNormal">@color/light_gray</item>
+    </style>
+    <style name="RatingBar" parent="Widget.AppCompat.RatingBar">
         <item name="colorControlActivated">@color/purple_background</item>
         <item name="colorControlNormal">@color/light_gray</item>
     </style>

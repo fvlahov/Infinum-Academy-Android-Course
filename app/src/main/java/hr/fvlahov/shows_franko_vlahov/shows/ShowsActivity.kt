@@ -21,7 +21,7 @@ class ShowsActivity : AppCompatActivity() {
         }
     }
 
-    private val officeReviews = listOf(
+    private val officeReviews = mutableListOf(
         Review("review1", 3.7f, "This show was a complete masterpiece, I really liked it.", "imenko.prezimenovic", R.drawable.ic_profile_placeholder),
         Review("review2", 3.5f, "", "branimir.akmadzic", R.drawable.ic_profile_placeholder),
         Review("review3", 3.7f, "It was good. I laughed a lot, it matches my sense of humor perfectly. Loved it!", "testamenko.testovic", R.drawable.ic_profile_placeholder),
@@ -29,8 +29,8 @@ class ShowsActivity : AppCompatActivity() {
 
     private val shows = listOf(
         Show("office", "The Office", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor", R.drawable.ic_office, officeReviews),
-        Show("strangerThings", "Stranger Things", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor", R.drawable.ic_stranger_things, null),
-        Show("bloodAintWater", "Krv nije Voda", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor", R.drawable.ic_krv_nije_voda, null)
+        Show("strangerThings", "Stranger Things", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor", R.drawable.ic_stranger_things, mutableListOf()),
+        Show("bloodAintWater", "Krv nije Voda", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor", R.drawable.ic_krv_nije_voda, mutableListOf())
     )
 
     private var showsVisibility = false
