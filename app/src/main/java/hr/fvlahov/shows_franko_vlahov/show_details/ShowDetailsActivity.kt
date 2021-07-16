@@ -57,11 +57,12 @@ class ShowDetailsActivity : AppCompatActivity() {
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         reviewsAdapter = ReviewsAdapter(show.reviews)
         binding.recyclerReviews.adapter = reviewsAdapter
+        
         updateReviewsAndRatingsVisibility()
     }
 
-    private fun updateReviewsAndRatingsVisibility(){
-        if (show.reviews.isNotEmpty()) {
+    private fun updateReviewsAndRatingsVisibility() {
+        if (reviewsAdapter?.itemCount ?: 0 > 0) {
             binding.labelNoReviews.visibility = View.GONE
 
             binding.recyclerReviews.visibility = View.VISIBLE
@@ -107,13 +108,13 @@ class ShowDetailsActivity : AppCompatActivity() {
         dialog.setContentView(bottomSheetBinding.root)
 
         bottomSheetBinding.confirmButton.setOnClickListener {
-            if(bottomSheetBinding.ratingReviewRating.rating != 0.0f){
+            if (bottomSheetBinding.ratingReviewRating.rating != 0.0f) {
                 addReview(
                     bottomSheetBinding.inputReview.text.toString(),
                     bottomSheetBinding.ratingReviewRating.rating
                 )
                 dialog.dismiss()
-            }else{
+            } else {
                 bottomSheetBinding.labelError.visibility = View.VISIBLE
             }
 
@@ -141,6 +142,6 @@ class ShowDetailsActivity : AppCompatActivity() {
         show.reviews.forEach {
             sum += it.rating
         }
-        return sum / (show.reviews?.size ?: 1)
+        return sum / (show.reviews.size ?: 1)
     }
 }
