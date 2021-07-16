@@ -50,7 +50,7 @@ class ShowsAdapter(
             binding.labelShowName.text = item.name
             binding.labelShowDescription.text = item.description
             binding.imageShowImage.setImageResource(item.imageResourceId)
-            binding.root.setOnClickListener{
+            binding.cardShows.setOnClickListener{
                 onClickCallback(item)
             }
         }

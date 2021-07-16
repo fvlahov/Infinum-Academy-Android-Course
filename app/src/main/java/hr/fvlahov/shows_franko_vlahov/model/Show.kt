@@ -7,5 +7,6 @@ data class Show(
     val id: String,
     val name: String,
     val description: String,
-    @DrawableRes val imageResourceId:Int
+    @DrawableRes val imageResourceId:Int,
+    val reviews: List<Review>?
     ) : Serializable
