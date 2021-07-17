@@ -57,7 +57,7 @@ class ShowDetailsActivity : AppCompatActivity() {
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         reviewsAdapter = ReviewsAdapter(show.reviews)
         binding.recyclerReviews.adapter = reviewsAdapter
-        
+
         updateReviewsAndRatingsVisibility()
     }
 
