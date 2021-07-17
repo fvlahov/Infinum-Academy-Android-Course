@@ -56,6 +56,10 @@ class ShowsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initShowsRecyclerView()
         initShowHideEmptyStateButton()
+
+        binding.buttonLogout.setOnClickListener {
+            findNavController().navigate(R.id.action_shows_to_login)
+        }
     }
 
     private fun initShowHideEmptyStateButton() {
