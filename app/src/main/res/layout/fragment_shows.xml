@@ -7,7 +7,7 @@
     android:paddingStart="@dimen/defaultLeftRightPadding"
     android:paddingTop="@dimen/activity_shows_view_padding_top"
     android:paddingEnd="@dimen/defaultLeftRightPadding"
-    tools:context=".shows.ShowsActivity">
+    tools:context=".shows.ShowsFragment">
 
     <TextView
         android:id="@+id/labelShows"

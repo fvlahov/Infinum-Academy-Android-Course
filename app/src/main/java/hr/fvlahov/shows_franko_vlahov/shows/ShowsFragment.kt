@@ -2,22 +2,24 @@ package hr.fvlahov.shows_franko_vlahov.shows
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.core.view.children
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import hr.fvlahov.shows_franko_vlahov.R
-import hr.fvlahov.shows_franko_vlahov.databinding.ActivityShowsBinding
+import hr.fvlahov.shows_franko_vlahov.databinding.FragmentShowsBinding
+import hr.fvlahov.shows_franko_vlahov.main.MainActivity
 import hr.fvlahov.shows_franko_vlahov.model.Review
 import hr.fvlahov.shows_franko_vlahov.model.Show
-import hr.fvlahov.shows_franko_vlahov.show_details.ShowDetailsActivity
 
-class ShowsActivity : AppCompatActivity() {
+class ShowsFragment : Fragment() {
 
     companion object {
         fun buildIntent(context: Activity): Intent {
-            return Intent(context, ShowsActivity::class.java)
+            return Intent(context, ShowsFragment::class.java)
         }
     }
 
@@ -35,17 +37,25 @@ class ShowsActivity : AppCompatActivity() {
 
     private var showsVisibility = false
 
-    private lateinit var binding: ActivityShowsBinding
+    private var _binding: FragmentShowsBinding? = null
+    private val binding get() = _binding!!
+
     private var adapter: ShowsAdapter? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
-        binding = ActivityShowsBinding.inflate(layoutInflater)
+        _binding = FragmentShowsBinding.inflate(layoutInflater, container, false)
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initShowsRecyclerView()
         initShowHideEmptyStateButton()
-
-        setContentView(binding.root)
     }
 
     private fun initShowHideEmptyStateButton() {
@@ -65,7 +75,7 @@ class ShowsActivity : AppCompatActivity() {
     }
 
     private fun initShowsRecyclerView() {
-        binding.recyclerShows.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.recyclerShows.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
         adapter = ShowsAdapter(shows){ show ->
             onShowClicked(show)
@@ -82,10 +92,12 @@ class ShowsActivity : AppCompatActivity() {
     }
 
     private fun onShowClicked(show: Show) {
-        val intent = ShowDetailsActivity.buildIntent(
-            this,
-            show
-        )
-        startActivity(intent)
+       val action = ShowsFragmentDirections.actionShowsToShowDetails(show)
+        findNavController().navigate(action)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

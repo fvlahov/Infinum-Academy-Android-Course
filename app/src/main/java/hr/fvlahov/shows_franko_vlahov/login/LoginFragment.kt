@@ -1,14 +1,19 @@
 package hr.fvlahov.shows_franko_vlahov.login
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
+import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
-import hr.fvlahov.shows_franko_vlahov.databinding.ActivityLoginBinding
-import hr.fvlahov.shows_franko_vlahov.shows.ShowsActivity
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import hr.fvlahov.shows_franko_vlahov.R
+import hr.fvlahov.shows_franko_vlahov.databinding.FragmentLoginBinding
 
-class LoginActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityLoginBinding
+class LoginFragment : Fragment() {
+    private var _binding: FragmentLoginBinding? = null
+
+    private val binding get() = _binding!!
 
     private val minEmailLength = 1
     private val minPasswordLength = 6
@@ -21,25 +26,26 @@ class LoginActivity : AppCompatActivity() {
     //Regular expression for email validation -> any word + '@' + any word + match between 2 and 4 of the preceeding token
     private val emailRegex: Regex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}\$".toRegex()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
-        binding = ActivityLoginBinding.inflate(layoutInflater)
-        val root = binding.root
-
-        setContentView(root)
+        _binding = FragmentLoginBinding.inflate(inflater, container, false)
 
         setNavigationVisibility(false)
         initLoginButton()
         initInputs()
+        return binding.root
     }
 
     // Deprecated, but couldn't find any other way to hide navigation and notification drawer
     private fun setNavigationVisibility(navigationVisibility: Boolean) {
         if (navigationVisibility) {
-            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+            activity?.window?.decorView?.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
         } else {
-            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
+            activity?.window?.decorView?.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
                     // Hide the nav bar and status bar
                     or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                     or View.SYSTEM_UI_FLAG_FULLSCREEN)
@@ -98,16 +104,18 @@ class LoginActivity : AppCompatActivity() {
         //TODO: Check email and password
         val canLogin = true
         if (canLogin) {
-            startWelcomeActivity()
+            navigateToShows()
         } else {
             //TODO: Show appropriate error message
         }
     }
 
-    private fun startWelcomeActivity() {
-        val intent = ShowsActivity.buildIntent(
-            this
-        )
-        startActivity(intent)
+    private fun navigateToShows() {
+        findNavController().navigate(R.id.action_login_to_shows)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
