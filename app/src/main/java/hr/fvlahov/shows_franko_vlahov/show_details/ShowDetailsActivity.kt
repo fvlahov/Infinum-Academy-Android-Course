@@ -111,7 +111,7 @@ class ShowDetailsActivity : AppCompatActivity() {
             if (bottomSheetBinding.ratingReviewRating.rating != 0.0f) {
                 addReview(
                     bottomSheetBinding.inputReview.text.toString(),
-                    bottomSheetBinding.ratingReviewRating.rating
+                    bottomSheetBinding.ratingReviewRating.rating.toInt()
                 )
                 dialog.dismiss()
             } else {
@@ -123,7 +123,7 @@ class ShowDetailsActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun addReview(reviewText: String, rating: Float) {
+    private fun addReview(reviewText: String, rating: Int) {
         show.reviews.add(
             Review(
                 "review",

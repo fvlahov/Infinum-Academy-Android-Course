@@ -34,9 +34,6 @@ class ShowsAdapter(
         holder.bind(items[position])
     }
 
-    // TODO: Public fun setItems (with superhero list)
-
-    // TODO: Public fun addItem (with superhero item)
     fun addItem(show: Show){
         items = items + show
         notifyItemInserted(items.lastIndex)

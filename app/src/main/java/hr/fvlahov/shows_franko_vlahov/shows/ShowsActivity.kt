@@ -22,9 +22,9 @@ class ShowsActivity : AppCompatActivity() {
     }
 
     private val officeReviews = mutableListOf(
-        Review("review1", 3.7f, "This show was a complete masterpiece, I really liked it.", "imenko.prezimenovic", R.drawable.ic_profile_placeholder),
-        Review("review2", 3.5f, "", "branimir.akmadzic", R.drawable.ic_profile_placeholder),
-        Review("review3", 3.7f, "It was good. I laughed a lot, it matches my sense of humor perfectly. Loved it!", "testamenko.testovic", R.drawable.ic_profile_placeholder),
+        Review("review1", 3, "This show was a complete masterpiece, I really liked it.", "imenko.prezimenovic", R.drawable.ic_profile_placeholder),
+        Review("review2", 4, "", "branimir.akmadzic", R.drawable.ic_profile_placeholder),
+        Review("review3", 5, "It was good. I laughed a lot, it matches my sense of humor perfectly. Loved it!", "testamenko.testovic", R.drawable.ic_profile_placeholder),
     )
 
     private val shows = listOf(

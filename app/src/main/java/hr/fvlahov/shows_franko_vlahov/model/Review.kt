@@ -5,7 +5,7 @@ import java.io.Serializable
 
 data class Review(
     val id: String,
-    val rating: Float,
+    val rating: Int,
     val review: String,
     val reviewerName: String,
     @DrawableRes val reviewerImageResourceId: Int
