@@ -36,12 +36,6 @@
         android:name="hr.fvlahov.shows_franko_vlahov.show_details.ShowDetailsFragment"
         tools:layout="@layout/fragment_show_details">
 
-        <action
-            android:id="@+id/action_show_details_to_shows"
-            app:destination="@id/fragment_shows"
-            app:popUpTo="@id/fragment_shows"
-            app:popUpToInclusive="true"/>
-
         <argument
             android:name="show"
             app:argType="hr.fvlahov.shows_franko_vlahov.model.Show"/>

@@ -13,7 +13,7 @@ class ReviewsAdapter(
 ) : RecyclerView.Adapter<ReviewsAdapter.ReviewViewHolder>()  {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewViewHolder {
-        val binding = ItemReviewBinding.inflate(LayoutInflater.from(parent.context))
+        val binding = ItemReviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         val holder = ReviewViewHolder(binding)
 
         return holder

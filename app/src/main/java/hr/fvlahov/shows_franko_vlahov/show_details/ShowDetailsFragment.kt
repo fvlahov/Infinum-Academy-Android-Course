@@ -60,7 +60,8 @@ class ShowDetailsFragment : Fragment() {
 
     private fun initToolbar() {
         binding.toolbar.setNavigationOnClickListener {
-            findNavController().navigate(R.id.action_show_details_to_shows)
+            findNavController().navigateUp()
+/*            findNavController().navigate(R.id.action_show_details_to_shows)*/
         }
     }
 
