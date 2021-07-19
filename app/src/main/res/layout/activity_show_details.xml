@@ -4,7 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".show_details.ShowDetailsActivity">
+    tools:context=".show_details.ShowDetailsActivity"
+    android:clipToPadding="false">
+
+<!--    <com.google.android.material.appbar.CollapsingToolbarLayout-->
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -16,9 +19,9 @@
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="?attr/homeAsUpIndicator" />
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollBody"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/cardWriteReview"
         app:layout_constraintEnd_toEndOf="parent"
@@ -92,6 +95,7 @@
                 android:layout_marginTop="40dp"
                 android:paddingBottom="48dp"
                 tools:itemCount="3"
+                android:nestedScrollingEnabled="false"
                 tools:listitem="@layout/item_review" />
 
             <TextView
@@ -103,7 +107,7 @@
                 android:text="@string/no_reviews_yet"/>
         </LinearLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardWriteReview"
@@ -111,7 +115,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:cardElevation="12dp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonWriteReview"
