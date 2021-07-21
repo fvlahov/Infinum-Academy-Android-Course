@@ -14,4 +14,5 @@
     <string name="confirm">Confirm</string>
     <string name="comment">Comment</string>
     <string name="please_add_a_rating">Please add a rating!</string>
+    <string name="remember_me">Remember me</string>
 </resources>

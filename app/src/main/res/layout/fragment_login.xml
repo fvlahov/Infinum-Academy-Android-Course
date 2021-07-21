@@ -122,6 +122,26 @@
     </com.google.android.material.textfield.TextInputLayout>
 
 
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/checkboxRememberMe"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="24dp"
+        tools:checked="true"
+        app:layout_constraintTop_toBottomOf="@id/containerPassword"
+        app:layout_constraintStart_toStartOf="parent"
+        android:buttonTint="@color/white"
+        android:layout_marginStart="@dimen/defaultLeftRightPadding"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@id/checkboxRememberMe"
+        app:layout_constraintTop_toTopOf="@id/checkboxRememberMe"
+        app:layout_constraintBottom_toBottomOf="@id/checkboxRememberMe"
+        android:text="@string/remember_me"
+        android:textColor="@color/white"/>
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonLogin"
         style="@style/WhiteButton"
