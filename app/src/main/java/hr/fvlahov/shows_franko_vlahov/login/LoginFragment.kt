@@ -1,5 +1,6 @@
 package hr.fvlahov.shows_franko_vlahov.login
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import hr.fvlahov.shows_franko_vlahov.R
 import hr.fvlahov.shows_franko_vlahov.databinding.FragmentLoginBinding
+
+const val REMEMBER_ME_LOGIN = "rememberMeLogin"
 
 class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
@@ -38,6 +41,15 @@ class LoginFragment : Fragment() {
         initLoginButton()
         initInputs()
         return binding.root
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
+        val shouldNavigateToShows = prefs?.getBoolean(REMEMBER_ME_LOGIN, false)
+        if(shouldNavigateToShows == true){
+            navigateToShows()
+        }
     }
 
     // Deprecated, but couldn't find any other way to hide navigation and notification drawer
@@ -104,9 +116,18 @@ class LoginFragment : Fragment() {
         //TODO: Check email and password
         val canLogin = true
         if (canLogin) {
+            rememberMeOnLogin(binding.checkboxRememberMe.isChecked)
             navigateToShows()
         } else {
             //TODO: Show appropriate error message
+        }
+    }
+
+    private fun rememberMeOnLogin(shouldRemember: Boolean) {
+        val sharedPrefs = activity?.getPreferences(Context.MODE_PRIVATE)
+        with(sharedPrefs?.edit()){
+            this?.putBoolean(REMEMBER_ME_LOGIN, shouldRemember)
+            this?.apply()
         }
     }
 
