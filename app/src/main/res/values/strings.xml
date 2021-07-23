@@ -15,4 +15,6 @@
     <string name="comment">Comment</string>
     <string name="please_add_a_rating">Please add a rating!</string>
     <string name="remember_me">Remember me</string>
+    <string name="change_profile_photo">Change profile photo</string>
+    <string name="logout">Logout</string>
 </resources>

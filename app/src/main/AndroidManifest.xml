@@ -16,9 +16,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".show_details.ShowDetailsFragment" />
-        <activity android:name=".shows.ShowsFragment" />
-        <activity android:name=".login.LoginFragment"/>
     </application>
 
 </manifest>

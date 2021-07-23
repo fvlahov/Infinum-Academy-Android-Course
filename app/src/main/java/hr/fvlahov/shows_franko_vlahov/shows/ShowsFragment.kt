@@ -1,6 +1,7 @@
 package hr.fvlahov.shows_franko_vlahov.shows
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import hr.fvlahov.shows_franko_vlahov.R
 import hr.fvlahov.shows_franko_vlahov.databinding.FragmentShowsBinding
+import hr.fvlahov.shows_franko_vlahov.login.REMEMBER_ME_LOGIN
 import hr.fvlahov.shows_franko_vlahov.main.MainActivity
 import hr.fvlahov.shows_franko_vlahov.model.Review
 import hr.fvlahov.shows_franko_vlahov.model.Show
@@ -56,10 +58,6 @@ class ShowsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initShowsRecyclerView()
         initShowHideEmptyStateButton()
-
-        binding.buttonLogout.setOnClickListener {
-            findNavController().navigate(R.id.action_shows_to_login)
-        }
     }
 
     private fun initShowHideEmptyStateButton() {
@@ -98,6 +96,16 @@ class ShowsFragment : Fragment() {
     private fun onShowClicked(show: Show) {
        val action = ShowsFragmentDirections.actionShowsToShowDetails(show)
         findNavController().navigate(action)
+    }
+
+    private fun logout(){
+        val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
+        with(prefs?.edit()){
+            this?.putBoolean(REMEMBER_ME_LOGIN, false)
+            this?.apply()
+        }
+        findNavController().navigate(R.id.action_shows_to_login)
+
     }
 
     override fun onDestroyView() {
