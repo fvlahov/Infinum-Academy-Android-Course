@@ -7,15 +7,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import hr.fvlahov.shows_franko_vlahov.R
+import hr.fvlahov.shows_franko_vlahov.databinding.DialogProfileBinding
 import hr.fvlahov.shows_franko_vlahov.databinding.FragmentShowsBinding
 import hr.fvlahov.shows_franko_vlahov.login.REMEMBER_ME_LOGIN
-import hr.fvlahov.shows_franko_vlahov.main.MainActivity
 import hr.fvlahov.shows_franko_vlahov.model.Review
 import hr.fvlahov.shows_franko_vlahov.model.Show
+
 
 class ShowsFragment : Fragment() {
 
@@ -58,6 +61,35 @@ class ShowsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initShowsRecyclerView()
         initShowHideEmptyStateButton()
+
+        binding.buttonShowProfile.setOnClickListener { onShowProfileClicked() }
+    }
+
+    private fun onShowProfileClicked() {
+        val bottomSheetDialog = BottomSheetDialog(this.requireContext())
+
+        val bottomSheetBinding = DialogProfileBinding.inflate(layoutInflater)
+        bottomSheetDialog.setContentView(bottomSheetBinding.root)
+
+        bottomSheetBinding.buttonLogout.setOnClickListener {
+            val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext()).apply {
+                setCancelable(true)
+                setTitle(getString(R.string.are_you_sure))
+                setMessage(getString(R.string.are_you_sure_logout))
+                setPositiveButton(getString(R.string.confirm)) { alertDialog, which -> onConfirmLogoutClicked(bottomSheetDialog) }
+                setNegativeButton(getString(android.R.string.cancel)) { dialog, which -> dialog.dismiss() }
+            }
+
+            val alertDialog: AlertDialog = builder.create()
+            alertDialog.show()
+        }
+
+        bottomSheetDialog.show()
+    }
+
+    private fun onConfirmLogoutClicked(bottomSheetDialog: BottomSheetDialog) {
+        bottomSheetDialog.dismiss()
+        logout()
     }
 
     private fun initShowHideEmptyStateButton() {

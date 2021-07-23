@@ -130,7 +130,6 @@ class ShowDetailsFragment : Fragment() {
             } else {
                 bottomSheetBinding.labelError.visibility = View.VISIBLE
             }
-
         }
 
         dialog.show()
