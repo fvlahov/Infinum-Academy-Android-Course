@@ -44,7 +44,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/labelShows" />
 
-    
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="labelShows,buttonShowHideEmptyState"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerShows"
@@ -54,7 +59,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/labelShows"
+        app:layout_constraintTop_toBottomOf="@id/barrier"
         tools:listitem="@layout/view_show_item" />
 
     <ImageView
