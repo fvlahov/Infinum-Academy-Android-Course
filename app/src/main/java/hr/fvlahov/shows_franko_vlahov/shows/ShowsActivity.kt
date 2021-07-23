@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.children
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import hr.fvlahov.shows_franko_vlahov.R
 import hr.fvlahov.shows_franko_vlahov.databinding.ActivityShowsBinding
@@ -42,24 +43,18 @@ class ShowsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         binding = ActivityShowsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         initShowsRecyclerView()
         initShowHideEmptyStateButton()
-
-        setContentView(binding.root)
     }
 
     private fun initShowHideEmptyStateButton() {
         binding.buttonShowHideEmptyState.setOnClickListener {
-            if(showsVisibility){
-                binding.imageEmptyShows.visibility = View.GONE
-                binding.labelEmptyShows.visibility = View.GONE
-                binding.recyclerShows.visibility = View.VISIBLE
-            }
-            else{
-                binding.imageEmptyShows.visibility = View.VISIBLE
-                binding.labelEmptyShows.visibility = View.VISIBLE
-                binding.recyclerShows.visibility = View.GONE
-            }
+
+            binding.groupEmptyShows.isVisible = !showsVisibility
+            binding.recyclerShows.isVisible = showsVisibility
+
             showsVisibility = !showsVisibility
         }
     }
@@ -83,8 +78,8 @@ class ShowsActivity : AppCompatActivity() {
 
     private fun onShowClicked(show: Show) {
         val intent = ShowDetailsActivity.buildIntent(
-            this,
-            show
+            activity = this,
+            show = show
         )
         startActivity(intent)
     }

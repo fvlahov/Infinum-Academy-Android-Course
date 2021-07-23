@@ -31,16 +31,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!--Iz nekog razloga mi odrezuje zadnji item pa sam morao dodati veliki paddingBottom-->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerShows"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:paddingBottom="88dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/labelShows"
         tools:listitem="@layout/view_show_item" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupEmptyShows"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:constraint_referenced_ids="imageEmptyShows,labelEmptyShows" />
 
     <ImageView
         android:id="@+id/imageEmptyShows"

@@ -98,13 +98,13 @@ class LoginActivity : AppCompatActivity() {
         //TODO: Check email and password
         val canLogin = true
         if (canLogin) {
-            startWelcomeActivity()
+            startShowsActivity()
         } else {
             //TODO: Show appropriate error message
         }
     }
 
-    private fun startWelcomeActivity() {
+    private fun startShowsActivity() {
         val intent = ShowsActivity.buildIntent(
             this
         )

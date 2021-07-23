@@ -7,7 +7,7 @@
         <item name="hintTextColor">@color/white</item>
     </style>
     <style name="PurpleTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="strokeColor">@color/purple_background</item>
+        <item name="boxStrokeColor">@color/purple_background</item>
         <item name="android:textColorHint">@color/purple_background</item>
         <item name="hintTextColor">@color/purple_background</item>
     </style>

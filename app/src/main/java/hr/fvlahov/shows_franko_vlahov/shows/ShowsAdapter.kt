@@ -15,7 +15,7 @@ class ShowsAdapter(
      * Called when RecyclerView needs a new ViewHolder to represent an item.
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowViewHolder {
-        val binding = ViewShowItemBinding.inflate(LayoutInflater.from(parent.context))
+        val binding = ViewShowItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         val holder = ShowViewHolder(binding)
 
         return holder
@@ -27,6 +27,7 @@ class ShowsAdapter(
     override fun getItemCount(): Int {
         return items.size
     }
+
     /**
      * Called by the RecyclerView to display the data at the specified position.
      */
@@ -34,7 +35,7 @@ class ShowsAdapter(
         holder.bind(items[position])
     }
 
-    fun addItem(show: Show){
+    fun addItem(show: Show) {
         items = items + show
         notifyItemInserted(items.lastIndex)
     }
@@ -42,19 +43,15 @@ class ShowsAdapter(
     /**
      * Custom-made ViewHolder, used to match the data to the concrete view.
      */
-    inner class ShowViewHolder(private val binding: ViewShowItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Show){
+    inner class ShowViewHolder(private val binding: ViewShowItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: Show) {
             binding.labelShowName.text = item.name
             binding.labelShowDescription.text = item.description
             binding.imageShowImage.setImageResource(item.imageResourceId)
-            binding.cardShows.setOnClickListener{
+            binding.cardShows.setOnClickListener {
                 onClickCallback(item)
             }
         }
     }
-
-
-
-
-
 }

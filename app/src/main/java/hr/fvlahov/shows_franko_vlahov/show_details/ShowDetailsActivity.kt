@@ -2,9 +2,12 @@ package hr.fvlahov.shows_franko_vlahov.show_details
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ShapeDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import hr.fvlahov.shows_franko_vlahov.R
@@ -36,10 +39,9 @@ class ShowDetailsActivity : AppCompatActivity() {
 
         binding = ActivityShowDetailsBinding.inflate(layoutInflater)
 
+        setContentView(binding.root)
 
         show = intent.extras?.getSerializable(EXTRA_SHOW) as Show
-
-        setContentView(binding.root)
 
         initViews()
         initToolbar()
@@ -57,7 +59,19 @@ class ShowDetailsActivity : AppCompatActivity() {
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         reviewsAdapter = ReviewsAdapter(show.reviews)
         binding.recyclerReviews.adapter = reviewsAdapter
-        
+
+        //Item decorator
+/*        val divider = DividerItemDecoration(
+            this,
+            DividerItemDecoration.VERTICAL
+        )
+
+        divider.setDrawable(ShapeDrawable().apply {
+            intrinsicHeight = resources.getDimensionPixelOffset(R.dimen.recyclerDividerWeight)
+            paint.color = Color.GRAY
+        })
+        binding.recyclerReviews.addItemDecoration(divider)*/
+
         updateReviewsAndRatingsVisibility()
     }
 
@@ -138,10 +152,8 @@ class ShowDetailsActivity : AppCompatActivity() {
     }
 
     private fun calculateAverageRating(): Float {
-        var sum = 0f
-        show.reviews.forEach {
-            sum += it.rating
-        }
-        return sum / (show.reviews.size ?: 1)
+        val averageRating = show.reviews.map { review -> review.rating }.average()
+
+        return averageRating.toFloat()
     }
 }

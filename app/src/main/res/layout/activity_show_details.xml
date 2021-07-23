@@ -4,16 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".show_details.ShowDetailsActivity"
-    android:clipToPadding="false">
+    android:clipToPadding="false"
+    tools:context=".show_details.ShowDetailsActivity">
 
-<!--    <com.google.android.material.appbar.CollapsingToolbarLayout-->
+    <!--    <com.google.android.material.appbar.CollapsingToolbarLayout-->
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -93,30 +92,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
+                android:nestedScrollingEnabled="false"
                 android:paddingBottom="48dp"
                 tools:itemCount="3"
-                android:nestedScrollingEnabled="false"
                 tools:listitem="@layout/item_review" />
 
             <TextView
                 android:id="@+id/labelNoReviews"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:layout_marginVertical="40dp"
-                android:text="@string/no_reviews_yet"/>
+                android:gravity="center"
+                android:text="@string/no_reviews_yet" />
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
 
-    <androidx.cardview.widget.CardView
+    <FrameLayout
         android:id="@+id/cardWriteReview"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:elevation="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:cardElevation="12dp">
+        app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonWriteReview"
@@ -132,6 +131,6 @@
             android:textAllCaps="false"
             app:cornerRadius="32dp"
             app:layout_constraintBottom_toBottomOf="parent" />
-    </androidx.cardview.widget.CardView>
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
