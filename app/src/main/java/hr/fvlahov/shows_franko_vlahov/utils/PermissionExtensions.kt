@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentActivity
 import com.google.android.material.snackbar.Snackbar
 import hr.fvlahov.shows_franko_vlahov.R
 
-//TODO create extension for requesting permissions
 fun Fragment.preparePermissionsContract(
     onPermissionsGranted: () -> Unit,
     onPermissionsDenied: () -> Unit = {

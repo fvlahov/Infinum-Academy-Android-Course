@@ -10,7 +10,7 @@
     android:paddingBottom="24dp">
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/imageReviewer"
+        android:id="@+id/imageProfile"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="center"

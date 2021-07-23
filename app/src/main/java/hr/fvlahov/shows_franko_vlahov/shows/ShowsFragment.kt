@@ -1,25 +1,38 @@
 package hr.fvlahov.shows_franko_vlahov.shows
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.imageview.ShapeableImageView
+import hr.fvlahov.shows_franko_vlahov.BuildConfig
 import hr.fvlahov.shows_franko_vlahov.R
 import hr.fvlahov.shows_franko_vlahov.databinding.DialogProfileBinding
 import hr.fvlahov.shows_franko_vlahov.databinding.FragmentShowsBinding
 import hr.fvlahov.shows_franko_vlahov.login.REMEMBER_ME_LOGIN
 import hr.fvlahov.shows_franko_vlahov.model.Review
 import hr.fvlahov.shows_franko_vlahov.model.Show
+import hr.fvlahov.shows_franko_vlahov.utils.FileUtil
+import hr.fvlahov.shows_franko_vlahov.utils.preparePermissionsContract
+import java.io.File
+import java.io.IOException
 
+private const val REQUEST_IMAGE_CAPTURE = 2
 
 class ShowsFragment : Fragment() {
 
@@ -78,6 +91,21 @@ class ShowsFragment : Fragment() {
 
     private var adapter: ShowsAdapter? = null
 
+    private val cameraPermission = preparePermissionsContract({ takePhoto() })
+
+    private var profileImage: ShapeableImageView? = null
+
+    private val takeImageResult =
+        registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
+            if (isSuccess) {
+                latestTmpUri?.let { uri ->
+                    profileImage?.setImageURI(uri)
+                }
+            }
+        }
+    private var latestTmpUri: Uri? = null
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -98,11 +126,48 @@ class ShowsFragment : Fragment() {
         binding.buttonShowProfile.setOnClickListener { onShowProfileClicked() }
     }
 
+    @SuppressLint("QueryPermissionsNeeded")
+    private fun takePhoto() {
+        lifecycleScope.launchWhenStarted {
+            getTmpFileUri().let { uri ->
+                latestTmpUri = uri
+                takeImageResult.launch(uri)
+            }
+        }
+
+/*        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+        if (takePictureIntent.resolveActivity(requireActivity().packageManager) != null) {
+            // Create the File where the photo should go
+            var photoFile: File? = null
+            try {
+                photoFile = FileUtil.createImageFile(requireContext())
+            } catch (ex: IOException) {
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                val photoURI_: Uri = FileProvider.getUriForFile(requireContext(), "hr.fvlahov.shows_franko_vlahov.fileprovider", photoFile)
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI_)
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+            }
+        }*/
+    }
+
+    private fun getTmpFileUri(): Uri {
+        val tmpFile = FileUtil.createImageFile(requireContext())
+
+        return FileProvider.getUriForFile(
+            requireContext(),
+            "${BuildConfig.APPLICATION_ID}.fileprovider",
+            tmpFile!!
+        )
+        //Kako da izbjegnem
+    }
 
     private fun preventBackToLoginIfLoggedIn() {
         val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
         val shouldNavigateToShows = prefs?.getBoolean(REMEMBER_ME_LOGIN, false) ?: false
-        if(shouldNavigateToShows){
+        if (shouldNavigateToShows) {
             val navController = findNavController()
             val startDestination = navController.graph.startDestination
             val navOptions = NavOptions.Builder()
@@ -122,7 +187,16 @@ class ShowsFragment : Fragment() {
             onButtonLogoutClicked(bottomSheetDialog)
         }
 
+        bottomSheetBinding.buttonChangeProfilePhoto.setOnClickListener {
+            onButtonChangeProfilePhotoClicked()
+        }
+
+        profileImage = bottomSheetBinding.imageProfile
         bottomSheetDialog.show()
+    }
+
+    private fun onButtonChangeProfilePhotoClicked() {
+        cameraPermission.launch(arrayOf(android.Manifest.permission.CAMERA))
     }
 
     private fun onButtonLogoutClicked(bottomSheetDialog: BottomSheetDialog) {
