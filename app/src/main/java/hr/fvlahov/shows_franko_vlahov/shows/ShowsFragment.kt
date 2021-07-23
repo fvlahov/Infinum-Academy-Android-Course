@@ -1,12 +1,9 @@
 package hr.fvlahov.shows_franko_vlahov.shows
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
@@ -29,18 +27,11 @@ import hr.fvlahov.shows_franko_vlahov.model.Review
 import hr.fvlahov.shows_franko_vlahov.model.Show
 import hr.fvlahov.shows_franko_vlahov.utils.FileUtil
 import hr.fvlahov.shows_franko_vlahov.utils.preparePermissionsContract
-import java.io.File
-import java.io.IOException
+import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowViewModel
 
 private const val REQUEST_IMAGE_CAPTURE = 2
 
 class ShowsFragment : Fragment() {
-
-    companion object {
-        fun buildIntent(context: Activity): Intent {
-            return Intent(context, ShowsFragment::class.java)
-        }
-    }
 
     private val officeReviews = mutableListOf(
         Review(
@@ -60,29 +51,7 @@ class ShowsFragment : Fragment() {
         ),
     )
 
-    private val shows = listOf(
-        Show(
-            "office",
-            "The Office",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
-            R.drawable.ic_office,
-            officeReviews
-        ),
-        Show(
-            "strangerThings",
-            "Stranger Things",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
-            R.drawable.ic_stranger_things,
-            mutableListOf()
-        ),
-        Show(
-            "bloodAintWater",
-            "Krv nije Voda",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
-            R.drawable.ic_krv_nije_voda,
-            mutableListOf()
-        )
-    )
+    private val viewModel: ShowViewModel by viewModels()
 
     private var showsVisibility = false
 
@@ -100,6 +69,7 @@ class ShowsFragment : Fragment() {
             if (isSuccess) {
                 latestTmpUri?.let { uri ->
                     profileImage?.setImageURI(uri)
+                    binding.buttonShowProfile.setImageURI(uri)
                 }
             }
         }
@@ -124,6 +94,14 @@ class ShowsFragment : Fragment() {
         //preventBackToLoginIfLoggedIn()
 
         binding.buttonShowProfile.setOnClickListener { onShowProfileClicked() }
+
+        viewModel.initShows()
+
+        viewModel.getShowsLiveData().observe(
+            requireActivity(),
+            { shows ->
+                updateShows(shows)
+            })
     }
 
     @SuppressLint("QueryPermissionsNeeded")
@@ -134,34 +112,16 @@ class ShowsFragment : Fragment() {
                 takeImageResult.launch(uri)
             }
         }
-
-/*        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-
-        if (takePictureIntent.resolveActivity(requireActivity().packageManager) != null) {
-            // Create the File where the photo should go
-            var photoFile: File? = null
-            try {
-                photoFile = FileUtil.createImageFile(requireContext())
-            } catch (ex: IOException) {
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                val photoURI_: Uri = FileProvider.getUriForFile(requireContext(), "hr.fvlahov.shows_franko_vlahov.fileprovider", photoFile)
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI_)
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
-            }
-        }*/
     }
 
     private fun getTmpFileUri(): Uri {
-        val tmpFile = FileUtil.createImageFile(requireContext())
+        val tmpFile = FileUtil.createImageFile(requireContext()) ?: return Uri.parse("")
 
         return FileProvider.getUriForFile(
             requireContext(),
             "${BuildConfig.APPLICATION_ID}.fileprovider",
-            tmpFile!!
+            tmpFile
         )
-        //Kako da izbjegnem
     }
 
     private fun preventBackToLoginIfLoggedIn() {
@@ -194,6 +154,7 @@ class ShowsFragment : Fragment() {
         profileImage = bottomSheetBinding.imageProfile
         bottomSheetDialog.show()
     }
+
 
     private fun onButtonChangeProfilePhotoClicked() {
         cameraPermission.launch(arrayOf(android.Manifest.permission.CAMERA))
@@ -236,14 +197,8 @@ class ShowsFragment : Fragment() {
         }
     }
 
-    private fun initShowsRecyclerView() {
-        binding.recyclerShows.layoutManager =
-            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-
-        adapter = ShowsAdapter(shows) { show ->
-            onShowClicked(show)
-        }
-        binding.recyclerShows.adapter = adapter
+    private fun updateShows(shows: List<Show>) {
+        adapter?.setItems(shows)
 
         if (adapter?.itemCount ?: 0 < 1) {
             binding.recyclerShows.visibility = View.GONE
@@ -251,6 +206,16 @@ class ShowsFragment : Fragment() {
             binding.imageEmptyShows.visibility = View.GONE
             binding.labelEmptyShows.visibility = View.GONE
         }
+    }
+
+    private fun initShowsRecyclerView() {
+        binding.recyclerShows.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+
+        adapter = ShowsAdapter(listOf()) { show ->
+            onShowClicked(show)
+        }
+        binding.recyclerShows.adapter = adapter
     }
 
     private fun onShowClicked(show: Show) {

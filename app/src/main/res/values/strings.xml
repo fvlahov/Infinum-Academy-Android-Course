@@ -19,6 +19,6 @@
     <string name="logout">Logout</string>
     <string name="are_you_sure">Are you sure?</string>
     <string name="are_you_sure_logout">Are you sure you want to logout?</string>
-    <string name="no_permission">You don\'t have permissions lmao</string>
+    <string name="no_permission">Permission not granted to use camera, please enable. </string>
     <string name="settings">Settings</string>
 </resources>
