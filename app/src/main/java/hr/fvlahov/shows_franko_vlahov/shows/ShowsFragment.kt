@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -29,15 +30,45 @@ class ShowsFragment : Fragment() {
     }
 
     private val officeReviews = mutableListOf(
-        Review("review1", 3.7f, "This show was a complete masterpiece, I really liked it.", "imenko.prezimenovic", R.drawable.ic_profile_placeholder),
+        Review(
+            "review1",
+            3.7f,
+            "This show was a complete masterpiece, I really liked it.",
+            "imenko.prezimenovic",
+            R.drawable.ic_profile_placeholder
+        ),
         Review("review2", 3.5f, "", "branimir.akmadzic", R.drawable.ic_profile_placeholder),
-        Review("review3", 3.7f, "It was good. I laughed a lot, it matches my sense of humor perfectly. Loved it!", "testamenko.testovic", R.drawable.ic_profile_placeholder),
+        Review(
+            "review3",
+            3.7f,
+            "It was good. I laughed a lot, it matches my sense of humor perfectly. Loved it!",
+            "testamenko.testovic",
+            R.drawable.ic_profile_placeholder
+        ),
     )
 
     private val shows = listOf(
-        Show("office", "The Office", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor", R.drawable.ic_office, officeReviews),
-        Show("strangerThings", "Stranger Things", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor", R.drawable.ic_stranger_things, mutableListOf()),
-        Show("bloodAintWater", "Krv nije Voda", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor", R.drawable.ic_krv_nije_voda, mutableListOf())
+        Show(
+            "office",
+            "The Office",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
+            R.drawable.ic_office,
+            officeReviews
+        ),
+        Show(
+            "strangerThings",
+            "Stranger Things",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
+            R.drawable.ic_stranger_things,
+            mutableListOf()
+        ),
+        Show(
+            "bloodAintWater",
+            "Krv nije Voda",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
+            R.drawable.ic_krv_nije_voda,
+            mutableListOf()
+        )
     )
 
     private var showsVisibility = false
@@ -62,7 +93,23 @@ class ShowsFragment : Fragment() {
         initShowsRecyclerView()
         initShowHideEmptyStateButton()
 
+        //preventBackToLoginIfLoggedIn()
+
         binding.buttonShowProfile.setOnClickListener { onShowProfileClicked() }
+    }
+
+
+    private fun preventBackToLoginIfLoggedIn() {
+        val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
+        val shouldNavigateToShows = prefs?.getBoolean(REMEMBER_ME_LOGIN, false) ?: false
+        if(shouldNavigateToShows){
+            val navController = findNavController()
+            val startDestination = navController.graph.startDestination
+            val navOptions = NavOptions.Builder()
+                .setPopUpTo(startDestination, true)
+                .build()
+            navController.navigate(startDestination, null, navOptions)
+        }
     }
 
     private fun onShowProfileClicked() {
@@ -72,19 +119,27 @@ class ShowsFragment : Fragment() {
         bottomSheetDialog.setContentView(bottomSheetBinding.root)
 
         bottomSheetBinding.buttonLogout.setOnClickListener {
-            val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext()).apply {
-                setCancelable(true)
-                setTitle(getString(R.string.are_you_sure))
-                setMessage(getString(R.string.are_you_sure_logout))
-                setPositiveButton(getString(R.string.confirm)) { alertDialog, which -> onConfirmLogoutClicked(bottomSheetDialog) }
-                setNegativeButton(getString(android.R.string.cancel)) { dialog, which -> dialog.dismiss() }
-            }
-
-            val alertDialog: AlertDialog = builder.create()
-            alertDialog.show()
+            onButtonLogoutClicked(bottomSheetDialog)
         }
 
         bottomSheetDialog.show()
+    }
+
+    private fun onButtonLogoutClicked(bottomSheetDialog: BottomSheetDialog) {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext()).apply {
+            setCancelable(true)
+            setTitle(getString(R.string.are_you_sure))
+            setMessage(getString(R.string.are_you_sure_logout))
+            setPositiveButton(getString(R.string.confirm)) { alertDialog, which ->
+                onConfirmLogoutClicked(
+                    bottomSheetDialog
+                )
+            }
+            setNegativeButton(getString(android.R.string.cancel)) { dialog, which -> dialog.dismiss() }
+        }
+
+        val alertDialog: AlertDialog = builder.create()
+        alertDialog.show()
     }
 
     private fun onConfirmLogoutClicked(bottomSheetDialog: BottomSheetDialog) {
@@ -94,12 +149,11 @@ class ShowsFragment : Fragment() {
 
     private fun initShowHideEmptyStateButton() {
         binding.buttonShowHideEmptyState.setOnClickListener {
-            if(showsVisibility){
+            if (showsVisibility) {
                 binding.imageEmptyShows.visibility = View.GONE
                 binding.labelEmptyShows.visibility = View.GONE
                 binding.recyclerShows.visibility = View.VISIBLE
-            }
-            else{
+            } else {
                 binding.imageEmptyShows.visibility = View.VISIBLE
                 binding.labelEmptyShows.visibility = View.VISIBLE
                 binding.recyclerShows.visibility = View.GONE
@@ -109,30 +163,30 @@ class ShowsFragment : Fragment() {
     }
 
     private fun initShowsRecyclerView() {
-        binding.recyclerShows.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        binding.recyclerShows.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
-        adapter = ShowsAdapter(shows){ show ->
+        adapter = ShowsAdapter(shows) { show ->
             onShowClicked(show)
         }
         binding.recyclerShows.adapter = adapter
 
-        if(adapter?.itemCount ?: 0 < 1){
+        if (adapter?.itemCount ?: 0 < 1) {
             binding.recyclerShows.visibility = View.GONE
-        }
-        else{
+        } else {
             binding.imageEmptyShows.visibility = View.GONE
             binding.labelEmptyShows.visibility = View.GONE
         }
     }
 
     private fun onShowClicked(show: Show) {
-       val action = ShowsFragmentDirections.actionShowsToShowDetails(show)
+        val action = ShowsFragmentDirections.actionShowsToShowDetails(show)
         findNavController().navigate(action)
     }
 
-    private fun logout(){
+    private fun logout() {
         val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
-        with(prefs?.edit()){
+        with(prefs?.edit()) {
             this?.putBoolean(REMEMBER_ME_LOGIN, false)
             this?.apply()
         }
