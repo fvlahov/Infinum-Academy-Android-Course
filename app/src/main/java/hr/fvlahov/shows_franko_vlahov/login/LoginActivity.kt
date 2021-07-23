@@ -5,7 +5,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import hr.fvlahov.shows_franko_vlahov.databinding.ActivityLoginBinding
-import hr.fvlahov.shows_franko_vlahov.welcome.WelcomeActivity
+import hr.fvlahov.shows_franko_vlahov.shows.ShowsActivity
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
@@ -15,10 +15,11 @@ class LoginActivity : AppCompatActivity() {
 
     private val emailInvalidMessage = "Enter a valid email address!"
     private val emailNotRecognizedMessage = "Email not recognized!"
-    private val emailPasswordCombinationErrorMessage = "Email and password combination not recognized!"
+    private val emailPasswordCombinationErrorMessage =
+        "Email and password combination not recognized!"
 
     //Regular expression for email validation -> any word + '@' + any word + match between 2 and 4 of the preceeding token
-    private val emailRegex : Regex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}\$".toRegex()
+    private val emailRegex: Regex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}\$".toRegex()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,8 +51,16 @@ class LoginActivity : AppCompatActivity() {
         binding.inputPassword.addTextChangedListener { onEmailPasswordTextChanged() }
 
         //Shows navigation if email or password input is in focus which means the keyboard is open
-        binding.inputEmail.setOnFocusChangeListener { _, hasFocus -> setNavigationVisibility(hasFocus) }
-        binding.inputPassword.setOnFocusChangeListener { _, hasFocus -> setNavigationVisibility(hasFocus) }
+        binding.inputEmail.setOnFocusChangeListener { _, hasFocus ->
+            setNavigationVisibility(
+                hasFocus
+            )
+        }
+        binding.inputPassword.setOnFocusChangeListener { _, hasFocus ->
+            setNavigationVisibility(
+                hasFocus
+            )
+        }
     }
 
     private fun onEmailPasswordTextChanged() {
@@ -81,29 +90,23 @@ class LoginActivity : AppCompatActivity() {
         //return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 
-    private fun showEmailErrorMessage(message: String){
+    private fun showEmailErrorMessage(message: String) {
         binding.containerEmail.error = message
     }
 
     private fun attemptLogin() {
         //TODO: Check email and password
         val canLogin = true
-        if(canLogin){
-            startWelcomeActivity()
-        }
-        else{
+        if (canLogin) {
+            startShowsActivity()
+        } else {
             //TODO: Show appropriate error message
         }
     }
 
-    private fun startWelcomeActivity(){
-        /*intent = Intent(Intent.NESTO)
-        intent.setData(Uri.parse("MOJ URL?"))
-        startActivity(intent)*/
-
-        val intent = WelcomeActivity.buildIntent(
-                this,
-                binding.inputEmail.text.toString()
+    private fun startShowsActivity() {
+        val intent = ShowsActivity.buildIntent(
+            this
         )
         startActivity(intent)
     }

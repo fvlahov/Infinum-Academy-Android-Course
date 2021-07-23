@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="activity_login_defaultLeftRightPadding">25dp</dimen>
-    <dimen name="activity_login_defaultTopBottomPadding">30dp</dimen>
+    <dimen name="defaultLeftRightPadding">24dp</dimen>
+    <dimen name="defaultTopBottomPadding">32dp</dimen>
     <dimen name="btn_corner_radius">24dp</dimen>
     <dimen name="activity_login_view_margin_top">16dp</dimen>
-    <dimen name="largerText">30sp</dimen>
+    <dimen name="activity_shows_view_padding_top">64dp</dimen>
+    <dimen name="largerText">32sp</dimen>
+    <dimen name="recyclerDividerWeight">1dp</dimen>
 </resources>

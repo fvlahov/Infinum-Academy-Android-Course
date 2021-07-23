@@ -41,9 +41,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="@string/shows"
+        style="@style/TextLarge"
         android:textColor="@color/white"
-        android:textSize="@dimen/largerText"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/imageTriangle"
         app:layout_constraintTop_toTopOf="@id/imageTriangle"
         app:layout_constraintStart_toEndOf="@id/imageTriangle" />
@@ -52,8 +51,8 @@
         android:id="@+id/labelLogin"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/activity_login_defaultLeftRightPadding"
-        android:layout_marginEnd="@dimen/activity_login_defaultLeftRightPadding"
+        android:layout_marginStart="@dimen/defaultLeftRightPadding"
+        android:layout_marginEnd="@dimen/defaultLeftRightPadding"
         android:text="@string/login"
         android:textColor="@color/white"
         android:textSize="@dimen/largerText"
@@ -67,9 +66,9 @@
         android:id="@+id/labelPleaseLogin"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/activity_login_defaultLeftRightPadding"
+        android:layout_marginStart="@dimen/defaultLeftRightPadding"
         android:layout_marginTop="@dimen/activity_login_view_margin_top"
-        android:layout_marginEnd="@dimen/activity_login_defaultLeftRightPadding"
+        android:layout_marginEnd="@dimen/defaultLeftRightPadding"
         android:text="@string/in_order_to_continue_please_log_in"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
@@ -81,9 +80,9 @@
         style="@style/WhiteTextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/activity_login_defaultLeftRightPadding"
+        android:layout_marginStart="@dimen/defaultLeftRightPadding"
         android:layout_marginTop="@dimen/activity_login_view_margin_top"
-        android:layout_marginEnd="@dimen/activity_login_defaultLeftRightPadding"
+        android:layout_marginEnd="@dimen/defaultLeftRightPadding"
         android:hint="@string/email"
         app:errorEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -95,7 +94,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:text="zdravko.mamic@hotmail.com"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -103,9 +103,9 @@
         style="@style/WhiteTextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/activity_login_defaultLeftRightPadding"
+        android:layout_marginStart="@dimen/defaultLeftRightPadding"
         android:layout_marginTop="5dp"
-        android:layout_marginEnd="@dimen/activity_login_defaultLeftRightPadding"
+        android:layout_marginEnd="@dimen/defaultLeftRightPadding"
         android:hint="@string/password"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -117,7 +117,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:text="nesjecamsestvarno"/>
     </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -126,9 +127,9 @@
         style="@style/WhiteButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/activity_login_defaultLeftRightPadding"
-        android:layout_marginEnd="@dimen/activity_login_defaultLeftRightPadding"
-        android:layout_marginBottom="@dimen/activity_login_defaultTopBottomPadding"
+        android:layout_marginStart="@dimen/defaultLeftRightPadding"
+        android:layout_marginEnd="@dimen/defaultLeftRightPadding"
+        android:layout_marginBottom="@dimen/defaultTopBottomPadding"
         android:enabled="false"
         android:text="@string/login"
         android:textAllCaps="false"
