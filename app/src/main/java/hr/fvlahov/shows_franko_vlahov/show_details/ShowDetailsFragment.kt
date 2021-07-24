@@ -24,16 +24,6 @@ import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowViewModel
 
 class ShowDetailsFragment : Fragment() {
 
-    companion object {
-        fun newInstance(show: Show): ShowDetailsFragment {
-            val args = Bundle()
-            args.putSerializable("EXTRA_SHOW", show);
-            val fragment = ShowDetailsFragment()
-            fragment.arguments = args
-            return fragment
-        }
-    }
-
     private var _binding: FragmentShowDetailsBinding? = null
     private val binding get() = _binding!!
 

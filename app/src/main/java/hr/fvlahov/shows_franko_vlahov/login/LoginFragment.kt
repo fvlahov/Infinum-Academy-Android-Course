@@ -10,8 +10,10 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import hr.fvlahov.shows_franko_vlahov.R
 import hr.fvlahov.shows_franko_vlahov.databinding.FragmentLoginBinding
+import hr.fvlahov.shows_franko_vlahov.shows.ShowsFragmentDirections
 
 const val REMEMBER_ME_LOGIN = "rememberMeLogin"
+const val USER_EMAIL = "userEmail"
 
 class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
@@ -117,9 +119,18 @@ class LoginFragment : Fragment() {
         val canLogin = true
         if (canLogin) {
             rememberMeOnLogin(binding.checkboxRememberMe.isChecked)
+            saveUserEmail()
             navigateToShows()
         } else {
             //TODO: Show appropriate error message
+        }
+    }
+
+    private fun saveUserEmail() {
+        val sharedPrefs = activity?.getPreferences(Context.MODE_PRIVATE)
+        with(sharedPrefs?.edit()){
+            this?.putString(USER_EMAIL, binding.inputEmail.text.toString())
+            this?.apply()
         }
     }
 
