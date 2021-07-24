@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import hr.fvlahov.shows_franko_vlahov.databinding.ItemReviewBinding
 import hr.fvlahov.shows_franko_vlahov.databinding.ViewShowItemBinding
 import hr.fvlahov.shows_franko_vlahov.model.Review
+import hr.fvlahov.shows_franko_vlahov.model.Show
 
 class ReviewsAdapter(
     private var items: List<Review>,
@@ -27,6 +28,10 @@ class ReviewsAdapter(
         holder.bind(items[position])
     }
 
+    fun setItems(reviews: List<Review>) {
+        items = reviews
+        notifyDataSetChanged()
+    }
 
     inner class ReviewViewHolder(private val binding: ItemReviewBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Review){

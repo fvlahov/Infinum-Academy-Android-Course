@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,6 +19,8 @@ import hr.fvlahov.shows_franko_vlahov.databinding.FragmentShowDetailsBinding
 import hr.fvlahov.shows_franko_vlahov.model.Review
 import hr.fvlahov.shows_franko_vlahov.model.Show
 import hr.fvlahov.shows_franko_vlahov.shows.ReviewsAdapter
+import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowDetailsViewModel
+import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowViewModel
 
 class ShowDetailsFragment : Fragment() {
 
@@ -39,12 +42,14 @@ class ShowDetailsFragment : Fragment() {
     private lateinit var show: Show
     private var reviewsAdapter: ReviewsAdapter? = null
 
+    private val viewModel: ShowDetailsViewModel by viewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentShowDetailsBinding.inflate(layoutInflater, container, false)
 
         return binding.root
@@ -56,6 +61,13 @@ class ShowDetailsFragment : Fragment() {
         initViews()
         initToolbar()
         initReviewsRecycler()
+
+        viewModel.initShow(show)
+        viewModel.getShowLiveData().observe(
+            requireActivity(),
+            { show ->
+                updateReviews(show.reviews)
+            })
     }
 
     private fun initToolbar() {
@@ -65,10 +77,15 @@ class ShowDetailsFragment : Fragment() {
         }
     }
 
+    private fun updateReviews(reviews: List<Review>){
+        reviewsAdapter?.setItems(reviews)
+        updateReviewsAndRatingsVisibility()
+    }
+
     private fun initReviewsRecycler() {
         binding.recyclerReviews.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        reviewsAdapter = ReviewsAdapter(show.reviews)
+        reviewsAdapter = ReviewsAdapter(listOf())
         binding.recyclerReviews.adapter = reviewsAdapter
 
         updateReviewsAndRatingsVisibility()
@@ -136,7 +153,7 @@ class ShowDetailsFragment : Fragment() {
     }
 
     private fun addReview(reviewText: String, rating: Float) {
-        show.reviews.add(
+        viewModel.addReview(
             Review(
                 "review",
                 rating,

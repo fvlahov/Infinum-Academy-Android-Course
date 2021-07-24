@@ -15,7 +15,7 @@
         android:layout_height="100dp"
         android:layout_gravity="center"
         app:shapeAppearanceOverlay="@style/RoundedImageViewRounded"
-        tools:src="@drawable/ic_profile_placeholder" />
+        android:src="@drawable/ic_profile_placeholder"/>
 
     <TextView
         android:id="@+id/labelUsername"

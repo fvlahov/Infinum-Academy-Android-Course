@@ -4,11 +4,14 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatImageButton
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -28,28 +31,12 @@ import hr.fvlahov.shows_franko_vlahov.model.Show
 import hr.fvlahov.shows_franko_vlahov.utils.FileUtil
 import hr.fvlahov.shows_franko_vlahov.utils.preparePermissionsContract
 import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowViewModel
+import java.lang.Exception
 
 private const val REQUEST_IMAGE_CAPTURE = 2
+private const val PROFILE_URI = "profileUri"
 
 class ShowsFragment : Fragment() {
-
-    private val officeReviews = mutableListOf(
-        Review(
-            "review1",
-            3.7f,
-            "This show was a complete masterpiece, I really liked it.",
-            "imenko.prezimenovic",
-            R.drawable.ic_profile_placeholder
-        ),
-        Review("review2", 3.5f, "", "branimir.akmadzic", R.drawable.ic_profile_placeholder),
-        Review(
-            "review3",
-            3.7f,
-            "It was good. I laughed a lot, it matches my sense of humor perfectly. Loved it!",
-            "testamenko.testovic",
-            R.drawable.ic_profile_placeholder
-        ),
-    )
 
     private val viewModel: ShowViewModel by viewModels()
 
@@ -67,12 +54,10 @@ class ShowsFragment : Fragment() {
     private val takeImageResult =
         registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
             if (isSuccess) {
-                latestTmpUri?.let { uri ->
-                    profileImage?.setImageURI(uri)
-                    binding.buttonShowProfile.setImageURI(uri)
-                }
+                onTakePictureSuccess()
             }
         }
+
     private var latestTmpUri: Uri? = null
 
 
@@ -80,7 +65,7 @@ class ShowsFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         _binding = FragmentShowsBinding.inflate(layoutInflater, container, false)
 
@@ -95,6 +80,8 @@ class ShowsFragment : Fragment() {
 
         binding.buttonShowProfile.setOnClickListener { onShowProfileClicked() }
 
+        setProfileImageIfExists(binding.buttonShowProfile)
+
         viewModel.initShows()
 
         viewModel.getShowsLiveData().observe(
@@ -102,6 +89,32 @@ class ShowsFragment : Fragment() {
             { shows ->
                 updateShows(shows)
             })
+    }
+
+    private fun setProfileImageIfExists(imageView: ImageView) {
+        val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
+        //Try catch jer mozda pukne kod parsiranja
+        try {
+            val imageUri = Uri.parse(prefs?.getString(PROFILE_URI, ""))
+            imageView.setImageURI(imageUri)
+        }
+        catch(e: Exception){
+            Log.d("ShowsFragment", e.message ?: "")
+            imageView.setImageResource(R.drawable.ic_profile_placeholder)
+        }
+    }
+
+    private fun onTakePictureSuccess() {
+        latestTmpUri?.let { uri ->
+            profileImage?.setImageURI(uri)
+            binding.buttonShowProfile.setImageURI(uri)
+
+            val sharedPrefs = activity?.getPreferences(Context.MODE_PRIVATE)
+            with(sharedPrefs?.edit()){
+                this?.putString(PROFILE_URI, uri.toString())
+                this?.apply()
+            }
+        }
     }
 
     @SuppressLint("QueryPermissionsNeeded")
@@ -142,6 +155,8 @@ class ShowsFragment : Fragment() {
 
         val bottomSheetBinding = DialogProfileBinding.inflate(layoutInflater)
         bottomSheetDialog.setContentView(bottomSheetBinding.root)
+
+        setProfileImageIfExists(bottomSheetBinding.imageProfile)
 
         bottomSheetBinding.buttonLogout.setOnClickListener {
             onButtonLogoutClicked(bottomSheetDialog)
