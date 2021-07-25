@@ -76,8 +76,6 @@ class ShowsFragment : Fragment() {
         initShowsRecyclerView()
         initShowHideEmptyStateButton()
 
-        //preventBackToLoginIfLoggedIn()
-
         binding.buttonShowProfile.setOnClickListener { onShowProfileClicked() }
 
         setProfileImageIfExists(binding.buttonShowProfile)
