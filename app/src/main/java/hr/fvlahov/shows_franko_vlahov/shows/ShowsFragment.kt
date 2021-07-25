@@ -36,7 +36,6 @@ import hr.fvlahov.shows_franko_vlahov.utils.preparePermissionsContract
 import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowViewModel
 import java.lang.Exception
 
-private const val REQUEST_IMAGE_CAPTURE = 2
 private const val PROFILE_URI = "profileUri"
 
 class ShowsFragment : Fragment() {
@@ -138,19 +137,6 @@ class ShowsFragment : Fragment() {
             "${BuildConfig.APPLICATION_ID}.fileprovider",
             tmpFile
         )
-    }
-
-    private fun preventBackToLoginIfLoggedIn() {
-        val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
-        val shouldNavigateToShows = prefs?.getBoolean(REMEMBER_ME_LOGIN, false) ?: false
-        if (shouldNavigateToShows) {
-            val navController = findNavController()
-            val startDestination = navController.graph.startDestination
-            val navOptions = NavOptions.Builder()
-                .setPopUpTo(startDestination, true)
-                .build()
-            navController.navigate(startDestination, null, navOptions)
-        }
     }
 
     private fun onShowProfileClicked() {

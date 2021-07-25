@@ -5,19 +5,27 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import hr.fvlahov.shows_franko_vlahov.R
 import hr.fvlahov.shows_franko_vlahov.databinding.FragmentRegisterBinding
+import hr.fvlahov.shows_franko_vlahov.login.LoginFragmentDirections
 import hr.fvlahov.shows_franko_vlahov.login.MIN_EMAIL_LENGTH
 import hr.fvlahov.shows_franko_vlahov.login.MIN_PASSWORD_LENGTH
+import hr.fvlahov.shows_franko_vlahov.shows.ShowsFragmentDirections
 import hr.fvlahov.shows_franko_vlahov.utils.NavigationHelper
 import hr.fvlahov.shows_franko_vlahov.utils.ValidationHelper
+import hr.fvlahov.shows_franko_vlahov.viewmodel.RegisterViewModel
 
 
 class RegisterFragment : Fragment() {
     private var _binding: FragmentRegisterBinding? = null
 
     private val binding get() = _binding!!
+
+    private val viewModel : RegisterViewModel by viewModels()
 
     private var emailErrorMessage = ""
     private var passwordErrorMessage = ""
@@ -33,7 +41,21 @@ class RegisterFragment : Fragment() {
         NavigationHelper().setNavigationVisibility(activity, false)
         initRegisterButton()
         initInputs()
+
+initViewModel()
+
         return binding.root
+    }
+
+    private fun initViewModel() {
+        viewModel.getRegistrationResultLiveData().observe(this.viewLifecycleOwner) { isRegisterSuccessful ->
+            if (isRegisterSuccessful) {
+                val action = RegisterFragmentDirections.actionRegisterToLogin(true)
+                findNavController().navigate(action)
+            } else {
+                //TODO: Handle registration errors
+            }
+        }
     }
 
     private fun initRegisterButton() {
@@ -84,7 +106,14 @@ class RegisterFragment : Fragment() {
     }
 
     private fun attemptRegister() {
-        TODO("Not yet implemented")
+        binding.apply {
+            viewModel.register(
+                inputEmail.text.toString(),
+                inputPassword.text.toString(),
+                inputConfirmPassword.text.toString()
+            )
+        }
+
     }
 
     private fun validateInputsAndHandleError(): Boolean {
@@ -103,5 +132,10 @@ class RegisterFragment : Fragment() {
             return false
         }
         return true
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

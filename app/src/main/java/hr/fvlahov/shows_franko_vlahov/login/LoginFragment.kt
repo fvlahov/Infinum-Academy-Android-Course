@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import hr.fvlahov.shows_franko_vlahov.R
 import hr.fvlahov.shows_franko_vlahov.databinding.FragmentLoginBinding
 import hr.fvlahov.shows_franko_vlahov.utils.NavigationHelper
@@ -22,6 +24,8 @@ class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
 
     private val binding get() = _binding!!
+
+    private val args : LoginFragmentArgs by navArgs()
 
     private val emailInvalidMessage = "Enter a valid email address!"
     private val emailNotRecognizedMessage = "Email not recognized!"
@@ -38,6 +42,7 @@ class LoginFragment : Fragment() {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
 
         NavigationHelper().setNavigationVisibility(activity, false)
+        updateViewsIfRegistrationSuccessful(args.registerSuccessful)
         initLoginButton()
         initInputs()
 
@@ -46,6 +51,13 @@ class LoginFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    private fun updateViewsIfRegistrationSuccessful(registerSuccessful: Boolean) {
+        if(registerSuccessful){
+            binding.labelLogin.text = resources.getString(R.string.registration_successful)
+            binding.buttonRegister.isVisible = false
+        }
     }
 
     override fun onAttach(context: Context) {

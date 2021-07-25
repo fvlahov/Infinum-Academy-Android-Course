@@ -19,6 +19,10 @@
         <action
             android:id="@+id/action_login_to_register"
             app:destination="@id/fragment_register" />
+
+        <argument
+            android:name="registerSuccessful"
+            app:argType="boolean"/>
     </fragment>
 
     <fragment
