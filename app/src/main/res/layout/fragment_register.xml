@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorPrimary"
-    tools:context=".login.LoginFragment">
+    tools:context=".register.RegisterFragment">
 
     <ImageView
         android:id="@+id/imageTopLeft"
@@ -48,32 +48,20 @@
         app:layout_constraintTop_toTopOf="@id/imageTriangle" />
 
     <TextView
-        android:id="@+id/labelLogin"
+        android:id="@+id/labelRegister"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/defaultLeftRightPadding"
         android:layout_marginEnd="@dimen/defaultLeftRightPadding"
-        android:text="@string/login"
+        android:text="@string/register"
         android:textColor="@color/white"
         android:textSize="@dimen/largerText"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/buttonLogin"
+        app:layout_constraintBottom_toTopOf="@id/buttonRegister"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/labelPleaseLogin"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/defaultLeftRightPadding"
-        android:layout_marginTop="@dimen/activity_login_view_margin_top"
-        android:layout_marginEnd="@dimen/defaultLeftRightPadding"
-        android:text="@string/in_order_to_continue_please_log_in"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/labelLogin" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/containerEmail"
@@ -87,14 +75,13 @@
         app:errorEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/labelPleaseLogin">
+        app:layout_constraintTop_toBottomOf="@id/labelRegister">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/inputEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:text="zdravko.mamic@hotmail.com"
             android:textColor="@color/white" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -107,69 +94,52 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="@dimen/defaultLeftRightPadding"
         android:hint="@string/password"
+        app:errorEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/containerEmail"
-        app:passwordToggleEnabled="true">
+        app:layout_constraintTop_toBottomOf="@id/containerEmail">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/inputPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
-            android:text="nesjecamsestvarno"
             android:textColor="@color/white" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <androidx.appcompat.widget.AppCompatCheckBox
-        android:id="@+id/checkboxRememberMe"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginStart="@dimen/defaultLeftRightPadding"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:buttonTint="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/containerPassword"
-        tools:checked="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="@string/remember_me"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="@id/checkboxRememberMe"
-        app:layout_constraintStart_toEndOf="@id/checkboxRememberMe"
-        app:layout_constraintTop_toTopOf="@id/checkboxRememberMe" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/buttonLogin"
-        style="@style/WhiteButton"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/containerConfirmPassword"
+        style="@style/WhiteTextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/defaultLeftRightPadding"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="@dimen/defaultLeftRightPadding"
-        android:layout_marginBottom="8dp"
-        android:enabled="false"
-        android:text="@string/login"
-        android:textAllCaps="false"
-        app:layout_constraintBottom_toTopOf="@id/buttonRegister"
+        android:hint="@string/repeat_password"
+        app:errorEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/containerPassword">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/inputConfirmPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:textColor="@color/white" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonRegister"
-        android:layout_width="0dp"
+        style="@style/WhiteButton"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/defaultLeftRightPadding"
         android:layout_marginEnd="@dimen/defaultLeftRightPadding"
-        android:layout_marginBottom="@dimen/defaultTopBottomPadding"
-        android:background="@color/transparent"
+        android:layout_marginBottom="24dp"
+        android:enabled="false"
         android:text="@string/register"
         android:textAllCaps="false"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

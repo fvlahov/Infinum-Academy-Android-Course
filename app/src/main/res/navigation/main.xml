@@ -15,6 +15,22 @@
             app:destination="@id/fragment_shows"
             app:popUpTo="@id/fragment_login"
             app:popUpToInclusive="true"/>
+
+        <action
+            android:id="@+id/action_login_to_register"
+            app:destination="@id/fragment_register" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_register"
+        android:name="hr.fvlahov.shows_franko_vlahov.register.RegisterFragment"
+        tools:layout="@layout/fragment_register">
+
+        <action
+            android:id="@+id/action_register_to_login"
+            app:destination="@id/fragment_login"
+            app:popUpTo="@id/fragment_login"
+            app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
