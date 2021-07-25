@@ -137,7 +137,8 @@ class ShowDetailsFragment : Fragment() {
             if (bottomSheetBinding.ratingReviewRating.rating != 0.0f) {
                 addReview(
                     bottomSheetBinding.inputReview.text.toString(),
-                    bottomSheetBinding.ratingReviewRating.rating
+                    bottomSheetBinding.ratingReviewRating.rating.toInt(),
+                    viewModel.getShowLiveData().value?.id?.toInt() ?: 0
                 )
                 dialog.dismiss()
             } else {
@@ -148,17 +149,9 @@ class ShowDetailsFragment : Fragment() {
         dialog.show()
     }
 
-    private fun addReview(reviewText: String, rating: Float) {
-/*        viewModel.(
-            Review(
-                "review",
-                rating,
-                reviewText,
-                "testan.testic",
-                R.drawable.ic_profile_placeholder
-            )
-        )*/
-        reviewsAdapter?.notifyItemInserted(viewModel.getReviewsLiveData().value?.lastIndex ?: 0)
+    private fun addReview(comment: String, rating: Int, showId: Int) {
+        viewModel.addReview(comment, rating, showId)
+
         updateReviewsAndRatingsVisibility()
     }
 

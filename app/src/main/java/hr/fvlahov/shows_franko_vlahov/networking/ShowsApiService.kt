@@ -2,6 +2,7 @@ package hr.fvlahov.shows_franko_vlahov.networking
 
 import hr.fvlahov.shows_franko_vlahov.model.api_request.LoginRequest
 import hr.fvlahov.shows_franko_vlahov.model.api_request.RegisterRequest
+import hr.fvlahov.shows_franko_vlahov.model.api_request.ReviewRequest
 import hr.fvlahov.shows_franko_vlahov.model.api_response.*
 import retrofit2.Call
 import retrofit2.http.Body
@@ -30,4 +31,7 @@ interface ShowsApiService {
 
     @GET("/shows/{showId}/reviews")
     fun getReviewsForShow(@Path("showId") showId: String) : Call<ListReviewsResponse>
+
+    @POST("/reviews")
+    fun createReview(@Body request : ReviewRequest) : Call<CreateReviewResponse>
 }

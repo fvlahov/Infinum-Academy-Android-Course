@@ -36,11 +36,15 @@ class LoginFragment : Fragment() {
 
     private val args : LoginFragmentArgs by navArgs()
 
-    private val emailInvalidMessage = "Enter a valid email address!"
-    private val emailNotRecognizedMessage = "Email not recognized!"
-    private val emailPasswordCombinationErrorMessage =
-        "Email and password combination not recognized!"
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
+        val shouldNavigateToShows = prefs?.getBoolean(REMEMBER_ME_LOGIN, false)
+        if(shouldNavigateToShows == true){
+            navigateToShows()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -86,15 +90,6 @@ class LoginFragment : Fragment() {
         }
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
-        val shouldNavigateToShows = prefs?.getBoolean(REMEMBER_ME_LOGIN, false)
-        if(shouldNavigateToShows == true){
-            navigateToShows()
-        }
-    }
-
     private fun initInputs() {
         binding.inputEmail.addTextChangedListener { onEmailPasswordTextChanged() }
         binding.inputPassword.addTextChangedListener { onEmailPasswordTextChanged() }
@@ -129,7 +124,7 @@ class LoginFragment : Fragment() {
             if (ValidationHelper().validateEmail(binding.inputEmail.text.toString())) {
                 attemptLogin()
             } else {
-                showEmailErrorMessage(emailInvalidMessage)
+                showEmailErrorMessage(resources.getString(R.string.enter_valid_email))
             }
         }
     }

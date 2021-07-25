@@ -3,10 +3,8 @@ package hr.fvlahov.shows_franko_vlahov.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import hr.fvlahov.shows_franko_vlahov.model.api_response.GetShowResponse
-import hr.fvlahov.shows_franko_vlahov.model.api_response.ListReviewsResponse
-import hr.fvlahov.shows_franko_vlahov.model.api_response.Review
-import hr.fvlahov.shows_franko_vlahov.model.api_response.Show
+import hr.fvlahov.shows_franko_vlahov.model.api_request.ReviewRequest
+import hr.fvlahov.shows_franko_vlahov.model.api_response.*
 import hr.fvlahov.shows_franko_vlahov.networking.ApiModule
 import retrofit2.Call
 import retrofit2.Callback
@@ -63,8 +61,23 @@ class ShowDetailsViewModel : ViewModel() {
             })
     }
 
-/*    fun addReview(review: Review) {
-        showLiveData.value?.reviews?.add(review)
-        //showLiveData.value = show
-    }*/
+    fun addReview(comment: String, rating: Int, showId: Int) {
+        ApiModule.retrofit.createReview(ReviewRequest(comment, rating, showId))
+            .enqueue(object : Callback<CreateReviewResponse> {
+                override fun onResponse(
+                    call: Call<CreateReviewResponse>,
+                    response: Response<CreateReviewResponse>
+                ) {
+                    if(response.isSuccessful && response.body() != null){
+                        //Forgive me father for I have sinned :(
+                        reviewsLiveData.postValue(reviewsLiveData.value!! + response.body()!!.review)
+                    }
+                }
+
+                override fun onFailure(call: Call<CreateReviewResponse>, t: Throwable) {
+                    throw t
+                }
+
+            })
+    }
 }
