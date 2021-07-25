@@ -4,6 +4,7 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import hr.fvlahov.shows_franko_vlahov.databinding.ViewShowItemBinding
 import hr.fvlahov.shows_franko_vlahov.model.api_response.Show
 import java.lang.Exception
@@ -56,7 +57,7 @@ class ShowsAdapter(
             binding.labelShowName.text = item.title
             binding.labelShowDescription.text = item.description
             try {
-                binding.imageShowImage.setImageURI(Uri.parse(item.imageUrl))
+                Glide.with(binding.root).load(item.imageUrl).into(binding.imageShowImage)
             } catch (e: Exception) {
 
             }

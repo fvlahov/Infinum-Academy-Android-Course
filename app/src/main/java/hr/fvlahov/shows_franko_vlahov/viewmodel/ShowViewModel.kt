@@ -31,7 +31,6 @@ class ShowViewModel : ViewModel() {
                 }
 
                 override fun onFailure(call: Call<ListShowsResponse>, t: Throwable) {
-
                 }
 
             })
