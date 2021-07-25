@@ -28,9 +28,7 @@ import hr.fvlahov.shows_franko_vlahov.databinding.DialogProfileBinding
 import hr.fvlahov.shows_franko_vlahov.databinding.FragmentShowsBinding
 import hr.fvlahov.shows_franko_vlahov.login.REMEMBER_ME_LOGIN
 import hr.fvlahov.shows_franko_vlahov.login.USER_EMAIL
-import hr.fvlahov.shows_franko_vlahov.model.Review
-import hr.fvlahov.shows_franko_vlahov.model.Show
-import hr.fvlahov.shows_franko_vlahov.show_details.ShowDetailsFragmentArgs
+import hr.fvlahov.shows_franko_vlahov.model.api_response.Show
 import hr.fvlahov.shows_franko_vlahov.utils.FileUtil
 import hr.fvlahov.shows_franko_vlahov.utils.preparePermissionsContract
 import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowViewModel
@@ -84,7 +82,7 @@ class ShowsFragment : Fragment() {
 
         setProfileImageIfExists(binding.buttonShowProfile)
 
-        viewModel.initShows()
+        viewModel.getShows()
 
         viewModel.getShowsLiveData().observe(
             requireActivity(),
@@ -228,7 +226,7 @@ class ShowsFragment : Fragment() {
     }
 
     private fun onShowClicked(show: Show) {
-        val action = ShowsFragmentDirections.actionShowsToShowDetails(show)
+        val action = ShowsFragmentDirections.actionShowsToShowDetails(show.id)
         findNavController().navigate(action)
     }
 

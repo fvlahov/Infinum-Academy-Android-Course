@@ -22,7 +22,8 @@
 
         <argument
             android:name="registerSuccessful"
-            app:argType="boolean"/>
+            app:argType="boolean"
+            android:defaultValue="false"/>
     </fragment>
 
     <fragment
@@ -59,7 +60,7 @@
         tools:layout="@layout/fragment_show_details">
 
         <argument
-            android:name="show"
-            app:argType="hr.fvlahov.shows_franko_vlahov.model.Show"/>
+            android:name="showId"
+            app:argType="string"/>
     </fragment>
 </navigation>

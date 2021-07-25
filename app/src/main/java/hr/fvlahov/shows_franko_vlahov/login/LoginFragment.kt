@@ -1,5 +1,6 @@
 package hr.fvlahov.shows_franko_vlahov.login
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,12 +9,17 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import hr.fvlahov.shows_franko_vlahov.R
 import hr.fvlahov.shows_franko_vlahov.databinding.FragmentLoginBinding
+import hr.fvlahov.shows_franko_vlahov.register.RegisterFragmentDirections
 import hr.fvlahov.shows_franko_vlahov.utils.NavigationHelper
 import hr.fvlahov.shows_franko_vlahov.utils.ValidationHelper
+import hr.fvlahov.shows_franko_vlahov.viewmodel.LoginViewModel
+import hr.fvlahov.shows_franko_vlahov.viewmodel.LoginViewModelFactory
 
 const val REMEMBER_ME_LOGIN = "rememberMeLogin"
 const val USER_EMAIL = "userEmail"
@@ -24,6 +30,9 @@ class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
 
     private val binding get() = _binding!!
+
+    private lateinit var viewModel : LoginViewModel
+    private lateinit var viewModelFactory : LoginViewModelFactory
 
     private val args : LoginFragmentArgs by navArgs()
 
@@ -41,16 +50,33 @@ class LoginFragment : Fragment() {
 
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
 
+        viewModelFactory = LoginViewModelFactory(requireActivity().getPreferences(Activity.MODE_PRIVATE))
+        viewModel = ViewModelProvider(this, viewModelFactory)
+            .get(LoginViewModel::class.java)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         NavigationHelper().setNavigationVisibility(activity, false)
         updateViewsIfRegistrationSuccessful(args.registerSuccessful)
         initLoginButton()
         initInputs()
 
+        viewModel.getLoginResultLiveData()
+            .observe(this.viewLifecycleOwner) { isLoginSuccessful ->
+                if (isLoginSuccessful) {
+                    rememberMeOnLogin(binding.checkboxRememberMe.isChecked)
+                    saveUserEmail()
+                    navigateToShows()
+                } else {
+                    binding.containerEmail.error = getString(R.string.email_password_dont_match)
+                    binding.containerPassword.error = getString(R.string.email_password_dont_match)
+                }
+            }
+
         binding.buttonRegister.setOnClickListener {
             findNavController().navigate(R.id.fragment_register)
         }
-
-        return binding.root
     }
 
     private fun updateViewsIfRegistrationSuccessful(registerSuccessful: Boolean) {
@@ -113,15 +139,10 @@ class LoginFragment : Fragment() {
     }
 
     private fun attemptLogin() {
-        //TODO: Check email and password
-        val canLogin = true
-        if (canLogin) {
-            rememberMeOnLogin(binding.checkboxRememberMe.isChecked)
-            saveUserEmail()
-            navigateToShows()
-        } else {
-            //TODO: Show appropriate error message
-        }
+        viewModel.login(
+            binding.inputEmail.text.toString(),
+            binding.inputPassword.text.toString()
+        )
     }
 
     private fun saveUserEmail() {

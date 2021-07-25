@@ -25,7 +25,7 @@ class RegisterFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    private val viewModel : RegisterViewModel by viewModels()
+    private val viewModel: RegisterViewModel by viewModels()
 
     private var emailErrorMessage = ""
     private var passwordErrorMessage = ""
@@ -34,7 +34,7 @@ class RegisterFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
 
@@ -42,20 +42,22 @@ class RegisterFragment : Fragment() {
         initRegisterButton()
         initInputs()
 
-initViewModel()
+        initViewModel()
 
         return binding.root
     }
 
     private fun initViewModel() {
-        viewModel.getRegistrationResultLiveData().observe(this.viewLifecycleOwner) { isRegisterSuccessful ->
-            if (isRegisterSuccessful) {
-                val action = RegisterFragmentDirections.actionRegisterToLogin(true)
-                findNavController().navigate(action)
-            } else {
-                //TODO: Handle registration errors
+        viewModel.getRegistrationResultLiveData()
+            .observe(this.viewLifecycleOwner) { isRegisterSuccessful ->
+                if (isRegisterSuccessful) {
+                    val action = RegisterFragmentDirections.actionRegisterToLogin()
+                    action.registerSuccessful = true
+                    findNavController().navigate(action)
+                } else {
+                    binding.containerEmail.error = getString(R.string.user_exists)
+                }
             }
-        }
     }
 
     private fun initRegisterButton() {
@@ -113,7 +115,6 @@ initViewModel()
                 inputConfirmPassword.text.toString()
             )
         }
-
     }
 
     private fun validateInputsAndHandleError(): Boolean {
@@ -127,8 +128,9 @@ initViewModel()
             binding.containerEmail.error = resources.getString(R.string.enter_valid_email)
             return false
         }
-        if (binding.inputPassword.text != binding.inputConfirmPassword.text) {
-            binding.containerConfirmPassword.error = resources.getString(R.string.passwords_dont_match)
+        if (binding.inputPassword.text.toString() != binding.inputConfirmPassword.text.toString()) {
+            binding.containerConfirmPassword.error =
+                resources.getString(R.string.passwords_dont_match)
             return false
         }
         return true

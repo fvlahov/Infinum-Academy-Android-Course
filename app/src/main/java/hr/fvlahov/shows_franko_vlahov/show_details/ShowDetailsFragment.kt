@@ -1,8 +1,6 @@
 package hr.fvlahov.shows_franko_vlahov.show_details
 
-import android.app.Activity
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,11 +14,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import hr.fvlahov.shows_franko_vlahov.R
 import hr.fvlahov.shows_franko_vlahov.databinding.DialogAddReviewBinding
 import hr.fvlahov.shows_franko_vlahov.databinding.FragmentShowDetailsBinding
-import hr.fvlahov.shows_franko_vlahov.model.Review
-import hr.fvlahov.shows_franko_vlahov.model.Show
+import hr.fvlahov.shows_franko_vlahov.model.api_response.Review
 import hr.fvlahov.shows_franko_vlahov.shows.ReviewsAdapter
 import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowDetailsViewModel
-import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowViewModel
 
 class ShowDetailsFragment : Fragment() {
 
@@ -29,7 +25,6 @@ class ShowDetailsFragment : Fragment() {
 
     private val args: ShowDetailsFragmentArgs by navArgs()
 
-    private lateinit var show: Show
     private var reviewsAdapter: ReviewsAdapter? = null
 
     private val viewModel: ShowDetailsViewModel by viewModels()
@@ -46,28 +41,33 @@ class ShowDetailsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        show = args.show
 
-        initViews()
         initToolbar()
         initReviewsRecycler()
 
-        viewModel.initShow(show)
+        viewModel.getShow(args.showId)
         viewModel.getShowLiveData().observe(
             requireActivity(),
             { show ->
-                updateReviews(show.reviews)
             })
+        viewModel.getReviewsForShow(args.showId)
+        viewModel.getReviewsLiveData().observe(
+            requireActivity(),
+            { reviews ->
+                updateReviews(reviews)
+            }
+        )
+
+        initViews()
     }
 
     private fun initToolbar() {
         binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
-/*            findNavController().navigate(R.id.action_show_details_to_shows)*/
         }
     }
 
-    private fun updateReviews(reviews: List<Review>){
+    private fun updateReviews(reviews: List<Review>) {
         reviewsAdapter?.setItems(reviews)
         updateReviewsAndRatingsVisibility()
     }
@@ -99,9 +99,15 @@ class ShowDetailsFragment : Fragment() {
     }
 
     private fun initViews() {
-        binding.labelShowName.text = show.name
-        binding.labelShowDescription.text = show.description
-        binding.imageShowImage.setImageResource(show.imageResourceId)
+        binding.labelShowName.text = viewModel.getShowLiveData().value?.title
+        binding.labelShowDescription.text = viewModel.getShowLiveData().value?.description
+
+        try {
+            binding.imageShowImage.setImageURI(Uri.parse(viewModel.getShowLiveData().value?.imageUrl))
+        }
+        catch(e: Exception){
+
+        }
 
         setRatings()
 
@@ -115,7 +121,7 @@ class ShowDetailsFragment : Fragment() {
 
         binding.labelAverageRating.text = String.format(
             resources.getString(R.string.numberOfReviewsAndAverage),
-            show.reviews.size.toString(),
+            viewModel.getShowLiveData().value?.numberOfReviews,
             String.format("%.2f", reviewAverage)
         )
         binding.ratingShowRating.rating = reviewAverage
@@ -143,7 +149,7 @@ class ShowDetailsFragment : Fragment() {
     }
 
     private fun addReview(reviewText: String, rating: Float) {
-        viewModel.addReview(
+/*        viewModel.(
             Review(
                 "review",
                 rating,
@@ -151,17 +157,13 @@ class ShowDetailsFragment : Fragment() {
                 "testan.testic",
                 R.drawable.ic_profile_placeholder
             )
-        )
-        reviewsAdapter?.notifyItemInserted(show.reviews.lastIndex)
+        )*/
+        reviewsAdapter?.notifyItemInserted(viewModel.getReviewsLiveData().value?.lastIndex ?: 0)
         updateReviewsAndRatingsVisibility()
     }
 
     private fun calculateAverageRating(): Float {
-        var sum = 0f
-        show.reviews.forEach {
-            sum += it.rating
-        }
-        return sum / (show.reviews.size ?: 1)
+        return 2f
     }
 
     override fun onDestroyView() {

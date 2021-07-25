@@ -1,10 +1,12 @@
 package hr.fvlahov.shows_franko_vlahov.shows
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import hr.fvlahov.shows_franko_vlahov.databinding.ViewShowItemBinding
-import hr.fvlahov.shows_franko_vlahov.model.Show
+import hr.fvlahov.shows_franko_vlahov.model.api_response.Show
+import java.lang.Exception
 
 class ShowsAdapter(
     private var items: List<Show>,
@@ -27,6 +29,7 @@ class ShowsAdapter(
     override fun getItemCount(): Int {
         return items.size
     }
+
     /**
      * Called by the RecyclerView to display the data at the specified position.
      */
@@ -39,7 +42,7 @@ class ShowsAdapter(
         notifyDataSetChanged()
     }
 
-    fun addItem(show: Show){
+    fun addItem(show: Show) {
         items = items + show
         notifyItemInserted(items.lastIndex)
     }
@@ -47,19 +50,21 @@ class ShowsAdapter(
     /**
      * Custom-made ViewHolder, used to match the data to the concrete view.
      */
-    inner class ShowViewHolder(private val binding: ViewShowItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Show){
-            binding.labelShowName.text = item.name
+    inner class ShowViewHolder(private val binding: ViewShowItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: Show) {
+            binding.labelShowName.text = item.title
             binding.labelShowDescription.text = item.description
-            binding.imageShowImage.setImageResource(item.imageResourceId)
-            binding.cardShows.setOnClickListener{
+            try {
+                binding.imageShowImage.setImageURI(Uri.parse(item.imageUrl))
+            } catch (e: Exception) {
+
+            }
+            binding.cardShows.setOnClickListener {
                 onClickCallback(item)
             }
         }
     }
-
-
-
 
 
 }

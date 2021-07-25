@@ -1,7 +1,5 @@
 package hr.fvlahov.shows_franko_vlahov.model.api_response
 
-import androidx.annotation.DrawableRes
-import hr.fvlahov.shows_franko_vlahov.model.Review
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -13,7 +11,7 @@ data class ListShowsResponse (
 @Serializable
 data class Show(
     @SerialName("id") val id: String,
-    @SerialName("average_rating") val averageRating: String?,
+    @SerialName("average_rating") val averageRating: Float?,
     @SerialName("description") val description: String?,
     @SerialName("image_url") val imageUrl: String?,
     @SerialName("no_of_reviews") val numberOfReviews: Int,

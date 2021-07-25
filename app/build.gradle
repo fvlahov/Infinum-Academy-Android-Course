@@ -1,8 +1,12 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id("androidx.navigation.safeargs")
+    id 'androidx.navigation.safeargs'
+
+
 }
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlinx-serialization'
 
 android {
     compileSdkVersion 30
