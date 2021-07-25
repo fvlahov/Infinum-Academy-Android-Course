@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import hr.fvlahov.shows_franko_vlahov.databinding.ItemReviewBinding
 import hr.fvlahov.shows_franko_vlahov.model.api_response.Review
 
@@ -38,9 +39,8 @@ class ReviewsAdapter(
             binding.labelReviewerName.text = item.user.email
 
             try {
-                binding.imageReviewer.setImageURI(Uri.parse(item.user.imageUrl))
-            }
-            catch(e: Exception){
+                Glide.with(binding.root).load(item.user.imageUrl).into(binding.imageReviewer)
+            } catch (e: java.lang.Exception) {
 
             }
 

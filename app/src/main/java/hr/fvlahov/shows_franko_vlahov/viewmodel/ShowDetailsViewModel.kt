@@ -58,7 +58,6 @@ class ShowDetailsViewModel : ViewModel() {
                 }
 
                 override fun onFailure(call: Call<ListReviewsResponse>, t: Throwable) {
-
                 }
 
             })

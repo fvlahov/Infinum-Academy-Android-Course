@@ -10,11 +10,13 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import hr.fvlahov.shows_franko_vlahov.R
 import hr.fvlahov.shows_franko_vlahov.databinding.DialogAddReviewBinding
 import hr.fvlahov.shows_franko_vlahov.databinding.FragmentShowDetailsBinding
 import hr.fvlahov.shows_franko_vlahov.model.api_response.Review
+import hr.fvlahov.shows_franko_vlahov.model.api_response.Show
 import hr.fvlahov.shows_franko_vlahov.shows.ReviewsAdapter
 import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowDetailsViewModel
 
@@ -46,9 +48,12 @@ class ShowDetailsFragment : Fragment() {
         initReviewsRecycler()
 
         viewModel.getShow(args.showId)
+        viewModel.getReviewsForShow(args.showId)
         viewModel.getShowLiveData().observe(
             requireActivity(),
             { show ->
+                updateShow(show)
+                setRatings(show)
             })
         viewModel.getReviewsForShow(args.showId)
         viewModel.getReviewsLiveData().observe(
@@ -57,8 +62,23 @@ class ShowDetailsFragment : Fragment() {
                 updateReviews(reviews)
             }
         )
+    }
 
-        initViews()
+    private fun updateShow(show: Show) {
+        binding.labelShowName.text = show.title
+        binding.labelShowDescription.text = show.description
+
+        try {
+            Glide.with(binding.root).load(show.imageUrl).into(binding.imageShowImage)
+        } catch (e: java.lang.Exception) {
+
+        }
+
+        setRatings(show)
+
+        binding.buttonWriteReview.setOnClickListener {
+            onWriteReviewClicked()
+        }
     }
 
     private fun initToolbar() {
@@ -88,7 +108,6 @@ class ShowDetailsFragment : Fragment() {
             binding.recyclerReviews.visibility = View.VISIBLE
             binding.ratingShowRating.visibility = View.VISIBLE
             binding.labelAverageRating.visibility = View.VISIBLE
-            setRatings()
         } else {
             binding.labelNoReviews.visibility = View.VISIBLE
 
@@ -98,33 +117,14 @@ class ShowDetailsFragment : Fragment() {
         }
     }
 
-    private fun initViews() {
-        binding.labelShowName.text = viewModel.getShowLiveData().value?.title
-        binding.labelShowDescription.text = viewModel.getShowLiveData().value?.description
-
-        try {
-            binding.imageShowImage.setImageURI(Uri.parse(viewModel.getShowLiveData().value?.imageUrl))
-        }
-        catch(e: Exception){
-
-        }
-
-        setRatings()
-
-        binding.buttonWriteReview.setOnClickListener {
-            onWriteReviewClicked()
-        }
-    }
-
-    private fun setRatings() {
-        val reviewAverage = calculateAverageRating()
+    private fun setRatings(show: Show) {
 
         binding.labelAverageRating.text = String.format(
             resources.getString(R.string.numberOfReviewsAndAverage),
             viewModel.getShowLiveData().value?.numberOfReviews,
-            String.format("%.2f", reviewAverage)
+            String.format("%.2f", show.averageRating)
         )
-        binding.ratingShowRating.rating = reviewAverage
+        binding.ratingShowRating.rating = show.averageRating ?: 0f
     }
 
     private fun onWriteReviewClicked() {
@@ -160,10 +160,6 @@ class ShowDetailsFragment : Fragment() {
         )*/
         reviewsAdapter?.notifyItemInserted(viewModel.getReviewsLiveData().value?.lastIndex ?: 0)
         updateReviewsAndRatingsVisibility()
-    }
-
-    private fun calculateAverageRating(): Float {
-        return 2f
     }
 
     override fun onDestroyView() {
