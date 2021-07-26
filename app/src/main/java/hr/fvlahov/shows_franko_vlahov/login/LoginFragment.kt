@@ -23,6 +23,8 @@ import hr.fvlahov.shows_franko_vlahov.viewmodel.LoginViewModelFactory
 
 const val REMEMBER_ME_LOGIN = "rememberMeLogin"
 const val USER_EMAIL = "userEmail"
+const val USER_IMAGE = "userImage"
+const val USER_ID = "userId"
 const val MIN_EMAIL_LENGTH = 1
 const val MIN_PASSWORD_LENGTH = 6
 

@@ -4,10 +4,11 @@ import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import hr.fvlahov.shows_franko_vlahov.login.USER_EMAIL
+import hr.fvlahov.shows_franko_vlahov.login.USER_ID
+import hr.fvlahov.shows_franko_vlahov.login.USER_IMAGE
 import hr.fvlahov.shows_franko_vlahov.model.api_request.LoginRequest
-import hr.fvlahov.shows_franko_vlahov.model.api_request.RegisterRequest
 import hr.fvlahov.shows_franko_vlahov.model.api_response.LoginResponse
-import hr.fvlahov.shows_franko_vlahov.model.api_response.RegisterResponse
 import hr.fvlahov.shows_franko_vlahov.networking.ApiModule
 import retrofit2.Call
 import retrofit2.Callback
@@ -42,7 +43,18 @@ class LoginViewModel(prefs: SharedPreferences) : ViewModel() {
                             ApiModule.UID,
                             response.headers()[ApiModule.UID]
                         )
-
+                        putString(
+                            USER_EMAIL,
+                            response.body()?.user?.email
+                        )
+                        putString(
+                            USER_IMAGE,
+                            response.body()?.user?.imageUrl
+                        )
+                        putInt(
+                            USER_ID,
+                            response.body()?.user?.id ?: 0
+                        )
                         apply()
                     }
                 }

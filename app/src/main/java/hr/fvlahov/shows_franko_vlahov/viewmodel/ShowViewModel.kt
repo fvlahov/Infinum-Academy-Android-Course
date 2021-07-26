@@ -1,14 +1,27 @@
 package hr.fvlahov.shows_franko_vlahov.viewmodel
 
+import android.content.SharedPreferences
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import hr.fvlahov.shows_franko_vlahov.login.USER_EMAIL
+import hr.fvlahov.shows_franko_vlahov.login.USER_ID
+import hr.fvlahov.shows_franko_vlahov.login.USER_IMAGE
 import hr.fvlahov.shows_franko_vlahov.model.api_response.ListShowsResponse
+import hr.fvlahov.shows_franko_vlahov.model.api_response.LoginResponse
 import hr.fvlahov.shows_franko_vlahov.model.api_response.Show
+import hr.fvlahov.shows_franko_vlahov.model.api_response.User
 import hr.fvlahov.shows_franko_vlahov.networking.ApiModule
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 
 class ShowViewModel : ViewModel() {
 
@@ -18,6 +31,24 @@ class ShowViewModel : ViewModel() {
 
     fun getShowsLiveData(): LiveData<List<Show>> {
         return showsLiveData
+    }
+
+    private val profileLiveData: MutableLiveData<User> by lazy {
+        MutableLiveData<User>()
+    }
+
+    fun getProfileLiveData(): LiveData<User> {
+        return profileLiveData
+    }
+
+    fun getProfileDetails(prefs: SharedPreferences) {
+        profileLiveData.postValue(
+            User(
+                id = prefs.getInt(USER_ID, 0),
+                email = prefs.getString(USER_EMAIL, "user") ?: "user",
+                imageUrl = prefs.getString(USER_IMAGE, "")
+            )
+        )
     }
 
     fun getShows() {
@@ -35,5 +66,30 @@ class ShowViewModel : ViewModel() {
 
             })
 
+    }
+
+    fun uploadAvatarImage(imagePath: String) {
+        ApiModule.retrofit.uploadImage(
+            prepareImagePathForUpload(imagePath)
+        )
+            .enqueue(object : Callback<LoginResponse> {
+                override fun onResponse(
+                    call: Call<LoginResponse>,
+                    response: Response<LoginResponse>
+                ) {
+                    profileLiveData.postValue(response.body()?.user)
+                }
+
+                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                    throw t
+                }
+
+            })
+    }
+
+    private fun prepareImagePathForUpload(imagePath: String): MultipartBody.Part {
+        val file = File(imagePath)
+        val requestFile = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+        return MultipartBody.Part.createFormData("image", file.name, requestFile)
     }
 }

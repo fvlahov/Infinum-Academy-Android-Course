@@ -1,6 +1,7 @@
 package hr.fvlahov.shows_franko_vlahov.shows
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
@@ -29,6 +30,7 @@ import hr.fvlahov.shows_franko_vlahov.databinding.FragmentShowsBinding
 import hr.fvlahov.shows_franko_vlahov.login.REMEMBER_ME_LOGIN
 import hr.fvlahov.shows_franko_vlahov.login.USER_EMAIL
 import hr.fvlahov.shows_franko_vlahov.model.api_response.Show
+import hr.fvlahov.shows_franko_vlahov.model.api_response.User
 import hr.fvlahov.shows_franko_vlahov.utils.FileUtil
 import hr.fvlahov.shows_franko_vlahov.utils.preparePermissionsContract
 import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowViewModel
@@ -87,6 +89,18 @@ class ShowsFragment : Fragment() {
             { shows ->
                 updateShows(shows)
             })
+
+        viewModel.getProfileDetails(requireActivity().getPreferences(Activity.MODE_PRIVATE))
+
+        viewModel.getProfileLiveData().observe(
+            requireActivity(),
+            { user ->
+                updateUser(user)
+            })
+    }
+
+    private fun updateUser(user: User) {
+        setProfileImageIfExists(binding.buttonShowProfile)
     }
 
     private fun setProfileImageIfExists(imageView: ImageView) {
@@ -95,8 +109,7 @@ class ShowsFragment : Fragment() {
         try {
             val imageUri = Uri.parse(prefs?.getString(PROFILE_URI, ""))
             imageView.setImageURI(imageUri)
-        }
-        catch(e: Exception){
+        } catch (e: Exception) {
             Log.d("ShowsFragment", e.message ?: "")
             imageView.setImageResource(R.drawable.ic_profile_placeholder)
         }
@@ -104,14 +117,8 @@ class ShowsFragment : Fragment() {
 
     private fun onTakePictureSuccess() {
         latestTmpUri?.let { uri ->
-            profileImage?.setImageURI(uri)
-            binding.buttonShowProfile.setImageURI(uri)
 
-            val sharedPrefs = activity?.getPreferences(Context.MODE_PRIVATE)
-            with(sharedPrefs?.edit()){
-                this?.putString(PROFILE_URI, uri.toString())
-                this?.apply()
-            }
+            viewModel.uploadAvatarImage(FileUtil.getImageFile(context)?.absolutePath ?: "")
         }
     }
 

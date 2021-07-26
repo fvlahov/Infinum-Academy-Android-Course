@@ -24,6 +24,7 @@
             android:name="registerSuccessful"
             app:argType="boolean"
             android:defaultValue="false"/>
+
     </fragment>
 
     <fragment

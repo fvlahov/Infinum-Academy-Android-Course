@@ -3,12 +3,11 @@ package hr.fvlahov.shows_franko_vlahov.networking
 import hr.fvlahov.shows_franko_vlahov.model.api_request.LoginRequest
 import hr.fvlahov.shows_franko_vlahov.model.api_request.RegisterRequest
 import hr.fvlahov.shows_franko_vlahov.model.api_request.ReviewRequest
+import hr.fvlahov.shows_franko_vlahov.model.api_request.UploadImageRequest
 import hr.fvlahov.shows_franko_vlahov.model.api_response.*
+import okhttp3.MultipartBody
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface ShowsApiService {
 
@@ -34,4 +33,8 @@ interface ShowsApiService {
 
     @POST("/reviews")
     fun createReview(@Body request : ReviewRequest) : Call<CreateReviewResponse>
+
+    @Multipart
+    @PUT("/users")
+    fun uploadImage(@Part image: MultipartBody.Part) : Call<LoginResponse>
 }
