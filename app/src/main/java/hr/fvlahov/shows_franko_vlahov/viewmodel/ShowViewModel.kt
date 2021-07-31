@@ -1,10 +1,12 @@
 package hr.fvlahov.shows_franko_vlahov.viewmodel
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import hr.fvlahov.shows_franko_vlahov.database.ShowsDatabase
 import hr.fvlahov.shows_franko_vlahov.login.USER_EMAIL
 import hr.fvlahov.shows_franko_vlahov.login.USER_ID
 import hr.fvlahov.shows_franko_vlahov.login.USER_IMAGE
@@ -13,6 +15,7 @@ import hr.fvlahov.shows_franko_vlahov.model.api_response.LoginResponse
 import hr.fvlahov.shows_franko_vlahov.model.api_response.Show
 import hr.fvlahov.shows_franko_vlahov.model.api_response.User
 import hr.fvlahov.shows_franko_vlahov.networking.ApiModule
+import hr.fvlahov.shows_franko_vlahov.utils.NetworkChecker
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -22,6 +25,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
+import java.util.concurrent.Executors
 
 class ShowViewModel : ViewModel() {
 
@@ -51,20 +55,42 @@ class ShowViewModel : ViewModel() {
         )
     }
 
-    fun getShows() {
-        ApiModule.retrofit.getAllShows()
-            .enqueue(object : Callback<ListShowsResponse> {
-                override fun onResponse(
-                    call: Call<ListShowsResponse>,
-                    response: Response<ListShowsResponse>
-                ) {
-                    showsLiveData.value = response.body()?.shows
-                }
+    //If you have a connection, retrieve data from API and save it to DB, otherwise retrieve from DB
+    fun getShows(context : Context) {
+        if(NetworkChecker().checkInternetConnectivity()){
+            //TODO: Repository pattern -> handles retrieving data based on internet connection
+            Executors.newSingleThreadExecutor().execute {
+                ApiModule.retrofit.getAllShows()
+                    .enqueue(object : Callback<ListShowsResponse> {
+                        override fun onResponse(
+                            call: Call<ListShowsResponse>,
+                            response: Response<ListShowsResponse>
+                        ) {
+                            if(response.isSuccessful){
+                                showsLiveData.value = response.body()?.shows
 
-                override fun onFailure(call: Call<ListShowsResponse>, t: Throwable) {
-                }
+                                val showEntities = response.body()?.shows?.map { it.convertToEntity() }
+                                if(showEntities != null){
+                                    ShowsDatabase.getDatabase(context).showDao().insertAllShows(showEntities)
+                                }
+                                else{
+                                    //TODO: Handle showEntities null error
+                                }
+                            }
+                        }
 
-            })
+                        override fun onFailure(call: Call<ListShowsResponse>, t: Throwable) {
+                            //TODO: Handle retrieving all shows error
+                        }
+
+                    })
+            }
+        }
+        else{
+            val dbShows = ShowsDatabase.getDatabase(context).showDao().getAllShows().value?.map { it.convertToModel() }
+
+            showsLiveData.value = dbShows
+        }
 
     }
 

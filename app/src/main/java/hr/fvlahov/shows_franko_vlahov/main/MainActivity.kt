@@ -30,33 +30,5 @@ class MainActivity : AppCompatActivity() {
 
         ApiModule.initRetrofit(getPreferences(Context.MODE_PRIVATE))
 
-        if(NetworkChecker().checkInternetConnectivity()){
-            //TODO: Repository pattern -> handles retrieving data based on internet connection
-            Executors.newSingleThreadExecutor().execute {
-                ApiModule.retrofit.getAllShows()
-                    .enqueue(object : Callback<ListShowsResponse> {
-                        override fun onResponse(
-                            call: Call<ListShowsResponse>,
-                            response: Response<ListShowsResponse>
-                        ) {
-                            if(response.isSuccessful){
-                                val showEntities = response.body()?.shows?.map { it.convertToEntity() }
-                                if(showEntities != null){
-                                    showsDatabase.showDao().insertAllShows(showEntities)
-                                }
-                                else{
-                                    //TODO: Handle showEntities null error
-                                }
-                            }
-                        }
-
-                        override fun onFailure(call: Call<ListShowsResponse>, t: Throwable) {
-                            //TODO: Handle retrieving all shows error
-                        }
-
-                    })
-            }
-        }
-
     }
 }

@@ -13,4 +13,14 @@ data class ShowEntity(
     @ColumnInfo(name = "image_url") val imageUrl: String?,
     @ColumnInfo(name = "no_of_reviews") val numberOfReviews: Int,
     @ColumnInfo(name = "title") val title: String
-)
+) : EntityConverter<Show> {
+    override fun convertToModel(): Show =
+        Show(
+            id = id.toString(),
+            averageRating = averageRating,
+            description = description,
+            imageUrl = imageUrl,
+            numberOfReviews = numberOfReviews,
+            title = title
+        )
+}

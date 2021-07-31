@@ -18,4 +18,13 @@ data class ReviewEntity(
     @ColumnInfo(name = "showId") val showId: Int,
     @ColumnInfo(name = "isSyncedWithApi") val isSyncedWithApi: Boolean = false,
     @Embedded @ColumnInfo(name = "user") val user: User
-)
+) : EntityConverter<Review> {
+    override fun convertToModel(): Review =
+        Review(
+            id = id.toString(),
+            comment = comment,
+            rating = rating,
+            showId = showId,
+            user = user
+        )
+}
