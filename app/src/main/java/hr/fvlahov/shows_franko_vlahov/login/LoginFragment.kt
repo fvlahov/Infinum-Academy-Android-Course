@@ -13,13 +13,16 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.snackbar.Snackbar
 import hr.fvlahov.shows_franko_vlahov.R
 import hr.fvlahov.shows_franko_vlahov.databinding.FragmentLoginBinding
 import hr.fvlahov.shows_franko_vlahov.register.RegisterFragmentDirections
 import hr.fvlahov.shows_franko_vlahov.utils.NavigationHelper
+import hr.fvlahov.shows_franko_vlahov.utils.NetworkChecker
 import hr.fvlahov.shows_franko_vlahov.utils.ValidationHelper
 import hr.fvlahov.shows_franko_vlahov.viewmodel.LoginViewModel
 import hr.fvlahov.shows_franko_vlahov.viewmodel.LoginViewModelFactory
+import java.util.concurrent.Executors
 
 const val REMEMBER_ME_LOGIN = "rememberMeLogin"
 const val USER_EMAIL = "userEmail"
@@ -33,17 +36,17 @@ class LoginFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    private lateinit var viewModel : LoginViewModel
-    private lateinit var viewModelFactory : LoginViewModelFactory
+    private lateinit var viewModel: LoginViewModel
+    private lateinit var viewModelFactory: LoginViewModelFactory
 
-    private val args : LoginFragmentArgs by navArgs()
+    private val args: LoginFragmentArgs by navArgs()
 
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
         val shouldNavigateToShows = prefs?.getBoolean(REMEMBER_ME_LOGIN, false)
-        if(shouldNavigateToShows == true){
+        if (shouldNavigateToShows == true) {
             navigateToShows()
         }
     }
@@ -56,7 +59,8 @@ class LoginFragment : Fragment() {
 
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
 
-        viewModelFactory = LoginViewModelFactory(requireActivity().getPreferences(Activity.MODE_PRIVATE))
+        viewModelFactory =
+            LoginViewModelFactory(requireActivity().getPreferences(Activity.MODE_PRIVATE))
         viewModel = ViewModelProvider(this, viewModelFactory)
             .get(LoginViewModel::class.java)
         return binding.root
@@ -86,7 +90,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun updateViewsIfRegistrationSuccessful(registerSuccessful: Boolean) {
-        if(registerSuccessful){
+        if (registerSuccessful) {
             binding.labelLogin.text = resources.getString(R.string.registration_successful)
             binding.buttonRegister.isVisible = false
         }
@@ -136,15 +140,28 @@ class LoginFragment : Fragment() {
     }
 
     private fun attemptLogin() {
-        viewModel.login(
-            binding.inputEmail.text.toString(),
-            binding.inputPassword.text.toString()
-        )
+        Executors.newSingleThreadExecutor().execute {
+            if (NetworkChecker().checkInternetConnectivity()) {
+                viewModel.login(
+                    binding.inputEmail.text.toString(),
+                    binding.inputPassword.text.toString()
+                )
+            } else {
+                Snackbar.make(
+                    requireContext(),
+                    binding.root,
+                    resources.getString(R.string.no_internet),
+                    Snackbar.LENGTH_INDEFINITE
+                ).show()
+            }
+        }
+
+
     }
 
     private fun saveUserEmail() {
         val sharedPrefs = activity?.getPreferences(Context.MODE_PRIVATE)
-        with(sharedPrefs?.edit()){
+        with(sharedPrefs?.edit()) {
             this?.putString(USER_EMAIL, binding.inputEmail.text.toString())
             this?.apply()
         }
@@ -152,7 +169,7 @@ class LoginFragment : Fragment() {
 
     private fun rememberMeOnLogin(shouldRemember: Boolean) {
         val sharedPrefs = activity?.getPreferences(Context.MODE_PRIVATE)
-        with(sharedPrefs?.edit()){
+        with(sharedPrefs?.edit()) {
             this?.putBoolean(REMEMBER_ME_LOGIN, shouldRemember)
             this?.apply()
         }

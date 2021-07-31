@@ -17,10 +17,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityMainBinding
 
-    val showsDatabase by lazy {
-        ShowsDatabase.getDatabase(this)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

@@ -1,12 +1,11 @@
 package hr.fvlahov.shows_franko_vlahov.viewmodel
 
-import android.content.Context
 import android.content.SharedPreferences
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import hr.fvlahov.shows_franko_vlahov.database.ShowsDatabase
+import hr.fvlahov.shows_franko_vlahov.database.entity.ShowEntity
 import hr.fvlahov.shows_franko_vlahov.login.USER_EMAIL
 import hr.fvlahov.shows_franko_vlahov.login.USER_ID
 import hr.fvlahov.shows_franko_vlahov.login.USER_IMAGE
@@ -16,10 +15,8 @@ import hr.fvlahov.shows_franko_vlahov.model.api_response.Show
 import hr.fvlahov.shows_franko_vlahov.model.api_response.User
 import hr.fvlahov.shows_franko_vlahov.networking.ApiModule
 import hr.fvlahov.shows_franko_vlahov.utils.NetworkChecker
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -27,15 +24,18 @@ import retrofit2.Response
 import java.io.File
 import java.util.concurrent.Executors
 
-class ShowViewModel : ViewModel() {
+class ShowViewModel(
+    val database: ShowsDatabase
+) : ViewModel() {
 
-    private val showsLiveData: MutableLiveData<List<Show>> by lazy {
+    private val showsApiLiveData: MutableLiveData<List<Show>> by lazy {
         MutableLiveData<List<Show>>()
     }
 
-    fun getShowsLiveData(): LiveData<List<Show>> {
-        return showsLiveData
+    fun getShowsApiLiveData(): LiveData<List<Show>> {
+        return showsApiLiveData
     }
+
 
     private val profileLiveData: MutableLiveData<User> by lazy {
         MutableLiveData<User>()
@@ -55,25 +55,28 @@ class ShowViewModel : ViewModel() {
         )
     }
 
-    //If you have a connection, retrieve data from API and save it to DB, otherwise retrieve from DB
-    fun getShows(context : Context) {
-        if(NetworkChecker().checkInternetConnectivity()){
-            //TODO: Repository pattern -> handles retrieving data based on internet connection
-            Executors.newSingleThreadExecutor().execute {
+    //If you have a network connection retrieve data from API and save it to DB, otherwise retrieve from DB
+    fun getShows() {
+        Executors.newSingleThreadExecutor().execute {
+            if (NetworkChecker().checkInternetConnectivity()) {
+                //TODO: Repository pattern -> handles retrieving data based on internet connection
+
                 ApiModule.retrofit.getAllShows()
                     .enqueue(object : Callback<ListShowsResponse> {
                         override fun onResponse(
                             call: Call<ListShowsResponse>,
                             response: Response<ListShowsResponse>
                         ) {
-                            if(response.isSuccessful){
-                                showsLiveData.value = response.body()?.shows
+                            if (response.isSuccessful) {
+                                showsApiLiveData.postValue(response.body()?.shows)
 
-                                val showEntities = response.body()?.shows?.map { it.convertToEntity() }
-                                if(showEntities != null){
-                                    ShowsDatabase.getDatabase(context).showDao().insertAllShows(showEntities)
-                                }
-                                else{
+                                val showEntities =
+                                    response.body()?.shows?.map { it.convertToEntity() }
+                                if (showEntities != null) {
+                                    Executors.newSingleThreadExecutor().execute {
+                                        database.showDao().insertAllShows(showEntities)
+                                    }
+                                } else {
                                     //TODO: Handle showEntities null error
                                 }
                             }
@@ -84,14 +87,11 @@ class ShowViewModel : ViewModel() {
                         }
 
                     })
+            } else {
+                showsApiLiveData.postValue(
+                    database.showDao().getAllShows().map { it.convertToModel() })
             }
         }
-        else{
-            val dbShows = ShowsDatabase.getDatabase(context).showDao().getAllShows().value?.map { it.convertToModel() }
-
-            showsLiveData.value = dbShows
-        }
-
     }
 
     fun uploadAvatarImage(imagePath: String) {

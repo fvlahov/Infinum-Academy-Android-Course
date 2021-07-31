@@ -6,11 +6,13 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import hr.fvlahov.shows_franko_vlahov.database.dao.ReviewDao
 import hr.fvlahov.shows_franko_vlahov.database.dao.ShowDao
+import hr.fvlahov.shows_franko_vlahov.database.entity.ReviewEntity
 import hr.fvlahov.shows_franko_vlahov.database.entity.ShowEntity
 
 @Database(
     entities = [
-        ShowEntity::class
+        ShowEntity::class,
+        ReviewEntity::class
     ],
     version = 1
 )
@@ -26,7 +28,7 @@ abstract class ShowsDatabase : RoomDatabase(){
                 val database = Room.databaseBuilder(
                     context,
                     ShowsDatabase::class.java,
-                    "superheroes_database"
+                    "shows_database"
                 )
                     .fallbackToDestructiveMigration()
                     .build()

@@ -10,7 +10,7 @@ import hr.fvlahov.shows_franko_vlahov.database.entity.ShowEntity
 
 @Dao
 interface ReviewDao {
-    @Query("SELECT * FROM reviews INNER JOIN shows ON showId = idShow WHERE shows.idShow IS showId")
+    @Query("SELECT * FROM reviews INNER JOIN shows ON showId = :idShow")
     fun getReviewsForShow(idShow: Int): LiveData<List<ReviewEntity>>
 
     @Query("SELECT * FROM reviews WHERE idReview IS :idReview")

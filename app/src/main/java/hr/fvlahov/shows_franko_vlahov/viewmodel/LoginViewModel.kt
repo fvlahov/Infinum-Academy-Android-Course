@@ -10,13 +10,16 @@ import hr.fvlahov.shows_franko_vlahov.login.USER_IMAGE
 import hr.fvlahov.shows_franko_vlahov.model.api_request.LoginRequest
 import hr.fvlahov.shows_franko_vlahov.model.api_response.LoginResponse
 import hr.fvlahov.shows_franko_vlahov.networking.ApiModule
+import hr.fvlahov.shows_franko_vlahov.utils.NetworkChecker
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.concurrent.Executors
 
 class LoginViewModel(prefs: SharedPreferences) : ViewModel() {
     private val preferences = prefs
     private val loginResultLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
+
 
     fun getLoginResultLiveData(): LiveData<Boolean> {
         return loginResultLiveData
@@ -25,6 +28,7 @@ class LoginViewModel(prefs: SharedPreferences) : ViewModel() {
     fun login(email: String, password: String) {
         ApiModule.retrofit.login(LoginRequest(email, password))
             .enqueue(object : Callback<LoginResponse> {
+
                 override fun onResponse(
                     call: Call<LoginResponse>,
                     response: Response<LoginResponse>
@@ -62,7 +66,6 @@ class LoginViewModel(prefs: SharedPreferences) : ViewModel() {
                 override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                     loginResultLiveData.value = false
                 }
-
             })
     }
 }

@@ -10,7 +10,7 @@ import hr.fvlahov.shows_franko_vlahov.database.entity.ShowEntity
 @Dao
 interface ShowDao {
     @Query("SELECT * FROM shows")
-    fun getAllShows() : LiveData<List<ShowEntity>>
+    fun getAllShows() : List<ShowEntity>
 
     @Query("SELECT * FROM shows WHERE idShow IS :idShow")
     fun getShow(idShow: String) : LiveData<ShowEntity>

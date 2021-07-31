@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import hr.fvlahov.shows_franko_vlahov.BuildConfig
 import hr.fvlahov.shows_franko_vlahov.R
+import hr.fvlahov.shows_franko_vlahov.ShowsApp
 import hr.fvlahov.shows_franko_vlahov.databinding.DialogProfileBinding
 import hr.fvlahov.shows_franko_vlahov.databinding.FragmentShowsBinding
 import hr.fvlahov.shows_franko_vlahov.login.REMEMBER_ME_LOGIN
@@ -29,13 +30,21 @@ import hr.fvlahov.shows_franko_vlahov.login.USER_EMAIL
 import hr.fvlahov.shows_franko_vlahov.login.USER_IMAGE
 import hr.fvlahov.shows_franko_vlahov.model.api_response.Show
 import hr.fvlahov.shows_franko_vlahov.utils.FileUtil
+import hr.fvlahov.shows_franko_vlahov.utils.NetworkChecker
 import hr.fvlahov.shows_franko_vlahov.utils.preparePermissionsContract
 import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowViewModel
+import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowViewModelFactory
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.lang.Exception
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 
 class ShowsFragment : Fragment() {
 
-    private val viewModel: ShowViewModel by viewModels()
+    private val viewModel: ShowViewModel by viewModels {
+        ShowViewModelFactory((activity?.application as ShowsApp).showsDatabase)
+    }
 
     private var showsVisibility = false
 
@@ -71,11 +80,14 @@ class ShowsFragment : Fragment() {
         initShowHideEmptyStateButton()
 
         binding.buttonShowProfile.setOnClickListener { onShowProfileClicked() }
-
         viewModel.getShows()
 
-        viewModel.getShowsLiveData().observe(
-            requireActivity(),
+        initViewModelLiveData()
+    }
+
+    private fun initViewModelLiveData() {
+        viewModel.getShowsApiLiveData().observe(
+            viewLifecycleOwner,
             { shows ->
                 updateShows(shows)
             })
@@ -146,7 +158,8 @@ class ShowsFragment : Fragment() {
         bottomSheetBinding.labelUsername.text = userEmail
 
         viewModel.getProfileLiveData().value?.let {
-            setProfileImageIfExists(bottomSheetBinding.imageProfile,
+            setProfileImageIfExists(
+                bottomSheetBinding.imageProfile,
                 it.imageUrl
             )
         }
