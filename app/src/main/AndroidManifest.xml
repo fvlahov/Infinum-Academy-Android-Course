@@ -9,15 +9,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ShowsFranko_Vlahov">
-        <activity android:name=".show_details.ShowDetailsActivity"/>
-        <activity android:name=".shows.ShowsActivity" />
-        <activity android:name=".login.LoginActivity">
+        <activity android:name=".main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".show_details.ShowDetailsFragment" />
+        <activity android:name=".shows.ShowsFragment" />
+        <activity android:name=".login.LoginFragment"/>
     </application>
 
 </manifest>
