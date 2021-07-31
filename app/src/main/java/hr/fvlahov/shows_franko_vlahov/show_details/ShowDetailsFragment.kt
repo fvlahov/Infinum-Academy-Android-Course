@@ -1,8 +1,6 @@
 package hr.fvlahov.shows_franko_vlahov.show_details
 
-import android.app.Activity
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,15 +10,15 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import hr.fvlahov.shows_franko_vlahov.R
 import hr.fvlahov.shows_franko_vlahov.databinding.DialogAddReviewBinding
 import hr.fvlahov.shows_franko_vlahov.databinding.FragmentShowDetailsBinding
-import hr.fvlahov.shows_franko_vlahov.model.Review
-import hr.fvlahov.shows_franko_vlahov.model.Show
+import hr.fvlahov.shows_franko_vlahov.model.api_response.Review
+import hr.fvlahov.shows_franko_vlahov.model.api_response.Show
 import hr.fvlahov.shows_franko_vlahov.shows.ReviewsAdapter
 import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowDetailsViewModel
-import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowViewModel
 
 class ShowDetailsFragment : Fragment() {
 
@@ -29,7 +27,6 @@ class ShowDetailsFragment : Fragment() {
 
     private val args: ShowDetailsFragmentArgs by navArgs()
 
-    private lateinit var show: Show
     private var reviewsAdapter: ReviewsAdapter? = null
 
     private val viewModel: ShowDetailsViewModel by viewModels()
@@ -46,28 +43,51 @@ class ShowDetailsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        show = args.show
 
-        initViews()
         initToolbar()
         initReviewsRecycler()
 
-        viewModel.initShow(show)
+        viewModel.getShow(args.showId)
+        viewModel.getReviewsForShow(args.showId)
         viewModel.getShowLiveData().observe(
             requireActivity(),
             { show ->
-                updateReviews(show.reviews)
+                updateShow(show)
+                setRatings(show)
             })
+        viewModel.getReviewsForShow(args.showId)
+        viewModel.getReviewsLiveData().observe(
+            requireActivity(),
+            { reviews ->
+                updateReviews(reviews)
+            }
+        )
+    }
+
+    private fun updateShow(show: Show) {
+        binding.labelShowName.text = show.title
+        binding.labelShowDescription.text = show.description
+
+        try {
+            Glide.with(binding.root).load(show.imageUrl).into(binding.imageShowImage)
+        } catch (e: java.lang.Exception) {
+
+        }
+
+        setRatings(show)
+
+        binding.buttonWriteReview.setOnClickListener {
+            onWriteReviewClicked()
+        }
     }
 
     private fun initToolbar() {
         binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
-/*            findNavController().navigate(R.id.action_show_details_to_shows)*/
         }
     }
 
-    private fun updateReviews(reviews: List<Review>){
+    private fun updateReviews(reviews: List<Review>) {
         reviewsAdapter?.setItems(reviews)
         updateReviewsAndRatingsVisibility()
     }
@@ -88,7 +108,6 @@ class ShowDetailsFragment : Fragment() {
             binding.recyclerReviews.visibility = View.VISIBLE
             binding.ratingShowRating.visibility = View.VISIBLE
             binding.labelAverageRating.visibility = View.VISIBLE
-            setRatings()
         } else {
             binding.labelNoReviews.visibility = View.VISIBLE
 
@@ -98,27 +117,14 @@ class ShowDetailsFragment : Fragment() {
         }
     }
 
-    private fun initViews() {
-        binding.labelShowName.text = show.name
-        binding.labelShowDescription.text = show.description
-        binding.imageShowImage.setImageResource(show.imageResourceId)
-
-        setRatings()
-
-        binding.buttonWriteReview.setOnClickListener {
-            onWriteReviewClicked()
-        }
-    }
-
-    private fun setRatings() {
-        val reviewAverage = calculateAverageRating()
+    private fun setRatings(show: Show) {
 
         binding.labelAverageRating.text = String.format(
             resources.getString(R.string.numberOfReviewsAndAverage),
-            show.reviews.size.toString(),
-            String.format("%.2f", reviewAverage)
+            viewModel.getShowLiveData().value?.numberOfReviews,
+            String.format("%.2f", show.averageRating)
         )
-        binding.ratingShowRating.rating = reviewAverage
+        binding.ratingShowRating.rating = show.averageRating ?: 0f
     }
 
     private fun onWriteReviewClicked() {
@@ -131,7 +137,8 @@ class ShowDetailsFragment : Fragment() {
             if (bottomSheetBinding.ratingReviewRating.rating != 0.0f) {
                 addReview(
                     bottomSheetBinding.inputReview.text.toString(),
-                    bottomSheetBinding.ratingReviewRating.rating
+                    bottomSheetBinding.ratingReviewRating.rating.toInt(),
+                    viewModel.getShowLiveData().value?.id?.toInt() ?: 0
                 )
                 dialog.dismiss()
             } else {
@@ -142,26 +149,10 @@ class ShowDetailsFragment : Fragment() {
         dialog.show()
     }
 
-    private fun addReview(reviewText: String, rating: Float) {
-        viewModel.addReview(
-            Review(
-                "review",
-                rating,
-                reviewText,
-                "testan.testic",
-                R.drawable.ic_profile_placeholder
-            )
-        )
-        reviewsAdapter?.notifyItemInserted(show.reviews.lastIndex)
-        updateReviewsAndRatingsVisibility()
-    }
+    private fun addReview(comment: String, rating: Int, showId: Int) {
+        viewModel.addReview(comment, rating, showId)
 
-    private fun calculateAverageRating(): Float {
-        var sum = 0f
-        show.reviews.forEach {
-            sum += it.rating
-        }
-        return sum / (show.reviews.size ?: 1)
+        updateReviewsAndRatingsVisibility()
     }
 
     override fun onDestroyView() {

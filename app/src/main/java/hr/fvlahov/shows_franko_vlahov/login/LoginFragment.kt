@@ -1,49 +1,43 @@
 package hr.fvlahov.shows_franko_vlahov.login
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import hr.fvlahov.shows_franko_vlahov.R
 import hr.fvlahov.shows_franko_vlahov.databinding.FragmentLoginBinding
-import hr.fvlahov.shows_franko_vlahov.shows.ShowsFragmentDirections
+import hr.fvlahov.shows_franko_vlahov.register.RegisterFragmentDirections
+import hr.fvlahov.shows_franko_vlahov.utils.NavigationHelper
+import hr.fvlahov.shows_franko_vlahov.utils.ValidationHelper
+import hr.fvlahov.shows_franko_vlahov.viewmodel.LoginViewModel
+import hr.fvlahov.shows_franko_vlahov.viewmodel.LoginViewModelFactory
 
 const val REMEMBER_ME_LOGIN = "rememberMeLogin"
 const val USER_EMAIL = "userEmail"
+const val USER_IMAGE = "userImage"
+const val USER_ID = "userId"
+const val MIN_EMAIL_LENGTH = 1
+const val MIN_PASSWORD_LENGTH = 6
 
 class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
 
     private val binding get() = _binding!!
 
-    private val minEmailLength = 1
-    private val minPasswordLength = 6
+    private lateinit var viewModel : LoginViewModel
+    private lateinit var viewModelFactory : LoginViewModelFactory
 
-    private val emailInvalidMessage = "Enter a valid email address!"
-    private val emailNotRecognizedMessage = "Email not recognized!"
-    private val emailPasswordCombinationErrorMessage =
-        "Email and password combination not recognized!"
+    private val args : LoginFragmentArgs by navArgs()
 
-    //Regular expression for email validation -> any word + '@' + any word + match between 2 and 4 of the preceeding token
-    private val emailRegex: Regex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}\$".toRegex()
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-
-        _binding = FragmentLoginBinding.inflate(inflater, container, false)
-
-        setNavigationVisibility(false)
-        initLoginButton()
-        initInputs()
-        return binding.root
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -54,15 +48,47 @@ class LoginFragment : Fragment() {
         }
     }
 
-    // Deprecated, but couldn't find any other way to hide navigation and notification drawer
-    private fun setNavigationVisibility(navigationVisibility: Boolean) {
-        if (navigationVisibility) {
-            activity?.window?.decorView?.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
-        } else {
-            activity?.window?.decorView?.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
-                    // Hide the nav bar and status bar
-                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    or View.SYSTEM_UI_FLAG_FULLSCREEN)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+
+        _binding = FragmentLoginBinding.inflate(inflater, container, false)
+
+        viewModelFactory = LoginViewModelFactory(requireActivity().getPreferences(Activity.MODE_PRIVATE))
+        viewModel = ViewModelProvider(this, viewModelFactory)
+            .get(LoginViewModel::class.java)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        NavigationHelper().setNavigationVisibility(activity, false)
+        updateViewsIfRegistrationSuccessful(args.registerSuccessful)
+        initLoginButton()
+        initInputs()
+
+        viewModel.getLoginResultLiveData()
+            .observe(this.viewLifecycleOwner) { isLoginSuccessful ->
+                if (isLoginSuccessful) {
+                    rememberMeOnLogin(binding.checkboxRememberMe.isChecked)
+                    saveUserEmail()
+                    navigateToShows()
+                } else {
+                    binding.containerEmail.error = getString(R.string.email_password_dont_match)
+                    binding.containerPassword.error = getString(R.string.email_password_dont_match)
+                }
+            }
+
+        binding.buttonRegister.setOnClickListener {
+            findNavController().navigate(R.id.fragment_register)
+        }
+    }
+
+    private fun updateViewsIfRegistrationSuccessful(registerSuccessful: Boolean) {
+        if(registerSuccessful){
+            binding.labelLogin.text = resources.getString(R.string.registration_successful)
+            binding.buttonRegister.isVisible = false
         }
     }
 
@@ -70,14 +96,18 @@ class LoginFragment : Fragment() {
         binding.inputEmail.addTextChangedListener { onEmailPasswordTextChanged() }
         binding.inputPassword.addTextChangedListener { onEmailPasswordTextChanged() }
 
+        val navHelper = NavigationHelper()
+
         //Shows navigation if email or password input is in focus which means the keyboard is open
         binding.inputEmail.setOnFocusChangeListener { _, hasFocus ->
-            setNavigationVisibility(
+            navHelper.setNavigationVisibility(
+                activity,
                 hasFocus
             )
         }
         binding.inputPassword.setOnFocusChangeListener { _, hasFocus ->
-            setNavigationVisibility(
+            navHelper.setNavigationVisibility(
+                activity,
                 hasFocus
             )
         }
@@ -87,27 +117,18 @@ class LoginFragment : Fragment() {
         val emailLength = binding.inputEmail.text?.length ?: 0
         val passwordLength = binding.inputPassword.text?.length ?: 0
 
-        val loginEnabled = emailLength >= minEmailLength && passwordLength >= minPasswordLength
+        val loginEnabled = emailLength >= MIN_EMAIL_LENGTH && passwordLength >= MIN_PASSWORD_LENGTH
         binding.buttonLogin.isEnabled = loginEnabled
     }
 
     private fun initLoginButton() {
         binding.buttonLogin.setOnClickListener {
-            if (validateEmail()) {
+            if (ValidationHelper().validateEmail(binding.inputEmail.text.toString())) {
                 attemptLogin()
             } else {
-                showEmailErrorMessage(emailInvalidMessage)
+                showEmailErrorMessage(resources.getString(R.string.enter_valid_email))
             }
         }
-    }
-
-    private fun validateEmail(): Boolean {
-        val target = binding.inputEmail.text.toString()
-
-        return emailRegex.matches(target)
-
-        //Another method of validating email address -- Didn't test
-        //return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 
     private fun showEmailErrorMessage(message: String) {
@@ -115,15 +136,10 @@ class LoginFragment : Fragment() {
     }
 
     private fun attemptLogin() {
-        //TODO: Check email and password
-        val canLogin = true
-        if (canLogin) {
-            rememberMeOnLogin(binding.checkboxRememberMe.isChecked)
-            saveUserEmail()
-            navigateToShows()
-        } else {
-            //TODO: Show appropriate error message
-        }
+        viewModel.login(
+            binding.inputEmail.text.toString(),
+            binding.inputPassword.text.toString()
+        )
     }
 
     private fun saveUserEmail() {

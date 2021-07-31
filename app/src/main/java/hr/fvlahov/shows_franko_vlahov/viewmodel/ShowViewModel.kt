@@ -1,55 +1,29 @@
 package hr.fvlahov.shows_franko_vlahov.viewmodel
 
+import android.content.SharedPreferences
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import hr.fvlahov.shows_franko_vlahov.R
-import hr.fvlahov.shows_franko_vlahov.model.Review
-import hr.fvlahov.shows_franko_vlahov.model.Show
+import hr.fvlahov.shows_franko_vlahov.login.USER_EMAIL
+import hr.fvlahov.shows_franko_vlahov.login.USER_ID
+import hr.fvlahov.shows_franko_vlahov.login.USER_IMAGE
+import hr.fvlahov.shows_franko_vlahov.model.api_response.ListShowsResponse
+import hr.fvlahov.shows_franko_vlahov.model.api_response.LoginResponse
+import hr.fvlahov.shows_franko_vlahov.model.api_response.Show
+import hr.fvlahov.shows_franko_vlahov.model.api_response.User
+import hr.fvlahov.shows_franko_vlahov.networking.ApiModule
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.io.File
 
 class ShowViewModel : ViewModel() {
-
-    private val officeReviews = mutableListOf(
-        Review(
-            "review1",
-            3.7f,
-            "This show was a complete masterpiece, I really liked it.",
-            "imenko.prezimenovic",
-            R.drawable.ic_profile_placeholder
-        ),
-        Review("review2", 3.5f, "", "branimir.akmadzic", R.drawable.ic_profile_placeholder),
-        Review(
-            "review3",
-            3.7f,
-            "It was good. I laughed a lot, it matches my sense of humor perfectly. Loved it!",
-            "testamenko.testovic",
-            R.drawable.ic_profile_placeholder
-        ),
-    )
-
-    private val shows = mutableListOf(
-        Show(
-            "office",
-            "The Office",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
-            R.drawable.ic_office,
-            officeReviews
-        ),
-        Show(
-            "strangerThings",
-            "Stranger Things",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
-            R.drawable.ic_stranger_things,
-            mutableListOf()
-        ),
-        Show(
-            "bloodAintWater",
-            "Krv nije Voda",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
-            R.drawable.ic_krv_nije_voda,
-            mutableListOf()
-        )
-    )
 
     private val showsLiveData: MutableLiveData<List<Show>> by lazy {
         MutableLiveData<List<Show>>()
@@ -59,12 +33,63 @@ class ShowViewModel : ViewModel() {
         return showsLiveData
     }
 
-    fun initShows() {
-        showsLiveData.value = shows
+    private val profileLiveData: MutableLiveData<User> by lazy {
+        MutableLiveData<User>()
     }
 
-    fun addShow(show: Show) {
-        shows.add(show)
-        showsLiveData.value = shows
+    fun getProfileLiveData(): LiveData<User> {
+        return profileLiveData
+    }
+
+    fun getProfileDetails(prefs: SharedPreferences) {
+        profileLiveData.postValue(
+            User(
+                id = prefs.getInt(USER_ID, 0),
+                email = prefs.getString(USER_EMAIL, "user") ?: "user",
+                imageUrl = prefs.getString(USER_IMAGE, "")
+            )
+        )
+    }
+
+    fun getShows() {
+        ApiModule.retrofit.getAllShows()
+            .enqueue(object : Callback<ListShowsResponse> {
+                override fun onResponse(
+                    call: Call<ListShowsResponse>,
+                    response: Response<ListShowsResponse>
+                ) {
+                    showsLiveData.value = response.body()?.shows
+                }
+
+                override fun onFailure(call: Call<ListShowsResponse>, t: Throwable) {
+                }
+
+            })
+
+    }
+
+    fun uploadAvatarImage(imagePath: String) {
+        ApiModule.retrofit.uploadImage(
+            prepareImagePathForUpload(imagePath)
+        )
+            .enqueue(object : Callback<LoginResponse> {
+                override fun onResponse(
+                    call: Call<LoginResponse>,
+                    response: Response<LoginResponse>
+                ) {
+                    profileLiveData.postValue(response.body()?.user)
+                }
+
+                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                    throw t
+                }
+
+            })
+    }
+
+    private fun prepareImagePathForUpload(imagePath: String): MultipartBody.Part {
+        val file = File(imagePath)
+        val requestFile = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+        return MultipartBody.Part.createFormData("image", file.name, requestFile)
     }
 }

@@ -1,13 +1,13 @@
 package hr.fvlahov.shows_franko_vlahov.shows
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import hr.fvlahov.shows_franko_vlahov.databinding.ItemReviewBinding
-import hr.fvlahov.shows_franko_vlahov.databinding.ViewShowItemBinding
-import hr.fvlahov.shows_franko_vlahov.model.Review
-import hr.fvlahov.shows_franko_vlahov.model.Show
+import hr.fvlahov.shows_franko_vlahov.model.api_response.Review
 
 class ReviewsAdapter(
     private var items: List<Review>,
@@ -35,10 +35,15 @@ class ReviewsAdapter(
 
     inner class ReviewViewHolder(private val binding: ItemReviewBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Review){
-            binding.labelReview.text = item.review
-            binding.labelReview.visibility = if(item.review.isEmpty()) View.GONE else View.VISIBLE
-            binding.labelReviewerName.text = item.reviewerName
-            binding.imageReviewer.setImageResource(item.reviewerImageResourceId)
+            binding.labelReview.text = item.comment
+            binding.labelReviewerName.text = item.user.email
+
+            try {
+                Glide.with(binding.root).load(item.user.imageUrl).into(binding.imageReviewer)
+            } catch (e: java.lang.Exception) {
+
+            }
+
             binding.labelRating.text = item.rating.toString()
         }
     }

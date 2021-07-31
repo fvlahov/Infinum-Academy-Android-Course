@@ -1,6 +1,7 @@
 package hr.fvlahov.shows_franko_vlahov.shows
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
@@ -11,33 +12,26 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.AppCompatImageButton
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.imageview.ShapeableImageView
 import hr.fvlahov.shows_franko_vlahov.BuildConfig
 import hr.fvlahov.shows_franko_vlahov.R
 import hr.fvlahov.shows_franko_vlahov.databinding.DialogProfileBinding
 import hr.fvlahov.shows_franko_vlahov.databinding.FragmentShowsBinding
 import hr.fvlahov.shows_franko_vlahov.login.REMEMBER_ME_LOGIN
 import hr.fvlahov.shows_franko_vlahov.login.USER_EMAIL
-import hr.fvlahov.shows_franko_vlahov.model.Review
-import hr.fvlahov.shows_franko_vlahov.model.Show
-import hr.fvlahov.shows_franko_vlahov.show_details.ShowDetailsFragmentArgs
+import hr.fvlahov.shows_franko_vlahov.login.USER_IMAGE
+import hr.fvlahov.shows_franko_vlahov.model.api_response.Show
 import hr.fvlahov.shows_franko_vlahov.utils.FileUtil
 import hr.fvlahov.shows_franko_vlahov.utils.preparePermissionsContract
 import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowViewModel
 import java.lang.Exception
-
-private const val REQUEST_IMAGE_CAPTURE = 2
-private const val PROFILE_URI = "profileUri"
 
 class ShowsFragment : Fragment() {
 
@@ -52,8 +46,6 @@ class ShowsFragment : Fragment() {
 
     private val cameraPermission = preparePermissionsContract({ takePhoto() })
 
-    private var profileImage: ShapeableImageView? = null
-
     private val takeImageResult =
         registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
             if (isSuccess) {
@@ -62,7 +54,6 @@ class ShowsFragment : Fragment() {
         }
 
     private var latestTmpUri: Uri? = null
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -79,45 +70,48 @@ class ShowsFragment : Fragment() {
         initShowsRecyclerView()
         initShowHideEmptyStateButton()
 
-        //preventBackToLoginIfLoggedIn()
-
         binding.buttonShowProfile.setOnClickListener { onShowProfileClicked() }
 
-        setProfileImageIfExists(binding.buttonShowProfile)
-
-        viewModel.initShows()
+        viewModel.getShows()
 
         viewModel.getShowsLiveData().observe(
             requireActivity(),
             { shows ->
                 updateShows(shows)
             })
+
+        viewModel.getProfileDetails(requireActivity().getPreferences(Activity.MODE_PRIVATE))
+
+        viewModel.getProfileLiveData().observe(
+            requireActivity(),
+            { user ->
+                setProfileImageIfExists(binding.buttonShowProfile, user.imageUrl)
+                saveImageUrlToPrefs(user.imageUrl)
+            })
     }
 
-    private fun setProfileImageIfExists(imageView: ImageView) {
-        val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
-        //Try catch jer mozda pukne kod parsiranja
-        try {
-            val imageUri = Uri.parse(prefs?.getString(PROFILE_URI, ""))
-            imageView.setImageURI(imageUri)
+    private fun saveImageUrlToPrefs(imageUrl: String?) {
+        activity?.getPreferences(Activity.MODE_PRIVATE)?.edit()?.apply {
+            putString(
+                USER_IMAGE,
+                imageUrl
+            )
+            apply()
         }
-        catch(e: Exception){
+    }
+
+    private fun setProfileImageIfExists(imageView: ImageView, imageUrl: String?) {
+        try {
+            Glide.with(requireContext()).load(imageUrl)
+                .into(imageView)
+        } catch (e: Exception) {
             Log.d("ShowsFragment", e.message ?: "")
             imageView.setImageResource(R.drawable.ic_profile_placeholder)
         }
     }
 
     private fun onTakePictureSuccess() {
-        latestTmpUri?.let { uri ->
-            profileImage?.setImageURI(uri)
-            binding.buttonShowProfile.setImageURI(uri)
-
-            val sharedPrefs = activity?.getPreferences(Context.MODE_PRIVATE)
-            with(sharedPrefs?.edit()){
-                this?.putString(PROFILE_URI, uri.toString())
-                this?.apply()
-            }
-        }
+        viewModel.uploadAvatarImage(FileUtil.getImageFile(context)?.absolutePath ?: "")
     }
 
     @SuppressLint("QueryPermissionsNeeded")
@@ -140,19 +134,6 @@ class ShowsFragment : Fragment() {
         )
     }
 
-    private fun preventBackToLoginIfLoggedIn() {
-        val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
-        val shouldNavigateToShows = prefs?.getBoolean(REMEMBER_ME_LOGIN, false) ?: false
-        if (shouldNavigateToShows) {
-            val navController = findNavController()
-            val startDestination = navController.graph.startDestination
-            val navOptions = NavOptions.Builder()
-                .setPopUpTo(startDestination, true)
-                .build()
-            navController.navigate(startDestination, null, navOptions)
-        }
-    }
-
     private fun onShowProfileClicked() {
         val bottomSheetDialog = BottomSheetDialog(this.requireContext())
 
@@ -164,7 +145,11 @@ class ShowsFragment : Fragment() {
 
         bottomSheetBinding.labelUsername.text = userEmail
 
-        setProfileImageIfExists(bottomSheetBinding.imageProfile)
+        viewModel.getProfileLiveData().value?.let {
+            setProfileImageIfExists(bottomSheetBinding.imageProfile,
+                it.imageUrl
+            )
+        }
 
         bottomSheetBinding.buttonLogout.setOnClickListener {
             onButtonLogoutClicked(bottomSheetDialog)
@@ -174,7 +159,6 @@ class ShowsFragment : Fragment() {
             onButtonChangeProfilePhotoClicked()
         }
 
-        profileImage = bottomSheetBinding.imageProfile
         bottomSheetDialog.show()
     }
 
@@ -242,7 +226,7 @@ class ShowsFragment : Fragment() {
     }
 
     private fun onShowClicked(show: Show) {
-        val action = ShowsFragmentDirections.actionShowsToShowDetails(show)
+        val action = ShowsFragmentDirections.actionShowsToShowDetails(show.id)
         findNavController().navigate(action)
     }
 
