@@ -34,9 +34,11 @@ class ShowsAdapter(
         holder.bind(items[position])
     }
 
-    // TODO: Public fun setItems (with superhero list)
+    fun setItems(shows: List<Show>) {
+        items = shows
+        notifyDataSetChanged()
+    }
 
-    // TODO: Public fun addItem (with superhero item)
     fun addItem(show: Show){
         items = items + show
         notifyItemInserted(items.lastIndex)
