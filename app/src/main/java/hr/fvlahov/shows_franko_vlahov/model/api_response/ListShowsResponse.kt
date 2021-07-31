@@ -1,5 +1,7 @@
 package hr.fvlahov.shows_franko_vlahov.model.api_response
 
+import hr.fvlahov.shows_franko_vlahov.database.entity.ModelEntity
+import hr.fvlahov.shows_franko_vlahov.database.entity.ShowEntity
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -17,7 +19,17 @@ data class Show(
     @SerialName("image_url") val imageUrl: String?,
     @SerialName("no_of_reviews") val numberOfReviews: Int,
     @SerialName("title") val title: String
-)
+) : ModelEntity<ShowEntity> {
+    override fun convertToEntity(): ShowEntity =
+        ShowEntity(
+            id = id.toInt(),
+            averageRating = averageRating,
+            description = description,
+            imageUrl = imageUrl,
+            numberOfReviews = numberOfReviews,
+            title = title
+        )
+}
 
 @Serializable
 data class Pagination(
