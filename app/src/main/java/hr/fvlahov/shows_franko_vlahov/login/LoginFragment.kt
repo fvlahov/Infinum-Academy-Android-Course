@@ -151,20 +151,12 @@ class LoginFragment : Fragment() {
                     requireContext(),
                     binding.root,
                     resources.getString(R.string.no_internet),
-                    Snackbar.LENGTH_INDEFINITE
+                    Snackbar.LENGTH_LONG
                 ).show()
             }
         }
 
 
-    }
-
-    private fun saveUserEmail() {
-        val sharedPrefs = activity?.getPreferences(Context.MODE_PRIVATE)
-        with(sharedPrefs?.edit()) {
-            this?.putString(USER_EMAIL, binding.inputEmail.text.toString())
-            this?.apply()
-        }
     }
 
     private fun rememberMeOnLogin(shouldRemember: Boolean) {
