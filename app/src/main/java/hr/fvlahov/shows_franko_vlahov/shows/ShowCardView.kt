@@ -25,7 +25,6 @@ class ShowCardView @JvmOverloads constructor(
     )
 
     init {
-
         setViewPaddings(context)
         clipToPadding = false
     }
