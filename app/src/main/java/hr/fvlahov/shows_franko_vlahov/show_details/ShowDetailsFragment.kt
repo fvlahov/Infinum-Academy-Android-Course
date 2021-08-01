@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -63,9 +64,8 @@ class ShowDetailsFragment : Fragment() {
                 updateShow(show)
                 setRatings(show)
             })
-        viewModel.getReviewsForShow(args.showId)
         viewModel.getReviewsLiveData().observe(
-            requireActivity(),
+            viewLifecycleOwner,
             { reviews ->
                 updateReviews(reviews)
             }
@@ -79,7 +79,7 @@ class ShowDetailsFragment : Fragment() {
         try {
             Glide.with(binding.root).load(show.imageUrl).into(binding.imageShowImage)
         } catch (e: java.lang.Exception) {
-
+            binding.imageShowImage.setImageResource(R.drawable.ic_triangle_white)
         }
 
         setRatings(show)

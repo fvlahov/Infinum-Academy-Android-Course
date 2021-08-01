@@ -57,6 +57,8 @@ class ShowsFragment : Fragment() {
             }
         }
 
+    private var profileBottomSheetAvatarImageView: ImageView? = null
+
     private var latestTmpUri: Uri? = null
 
     override fun onCreateView(
@@ -93,6 +95,7 @@ class ShowsFragment : Fragment() {
             requireActivity(),
             { user ->
                 setProfileImageIfExists(binding.buttonShowProfile, user.imageUrl)
+                profileBottomSheetAvatarImageView?.let { setProfileImageIfExists(it, user.imageUrl) }
                 saveImageUrlToPrefs(user.imageUrl)
             })
     }
@@ -110,6 +113,7 @@ class ShowsFragment : Fragment() {
     private fun setProfileImageIfExists(imageView: ImageView, imageUrl: String?) {
         try {
             Glide.with(requireContext()).load(imageUrl)
+                .circleCrop()
                 .into(imageView)
         } catch (e: Exception) {
             Log.d("ShowsFragment", e.message ?: "")
@@ -121,7 +125,6 @@ class ShowsFragment : Fragment() {
         viewModel.uploadAvatarImage(FileUtil.getImageFile(context)?.absolutePath ?: "")
     }
 
-    @SuppressLint("QueryPermissionsNeeded")
     private fun takePhoto() {
         lifecycleScope.launchWhenStarted {
             getTmpFileUri().let { uri ->
@@ -147,6 +150,8 @@ class ShowsFragment : Fragment() {
         val bottomSheetBinding = DialogProfileBinding.inflate(layoutInflater)
         bottomSheetDialog.setContentView(bottomSheetBinding.root)
 
+        profileBottomSheetAvatarImageView = bottomSheetBinding.imageProfile
+
         val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
         val userEmail = prefs?.getString(USER_EMAIL, "associate")
 
@@ -167,6 +172,7 @@ class ShowsFragment : Fragment() {
             onButtonChangeProfilePhotoClicked()
         }
 
+        bottomSheetDialog.setOnDismissListener { profileBottomSheetAvatarImageView = null }
         bottomSheetDialog.show()
     }
 
