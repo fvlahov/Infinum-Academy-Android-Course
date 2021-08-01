@@ -2,10 +2,13 @@ package hr.fvlahov.shows_franko_vlahov.main
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import hr.fvlahov.shows_franko_vlahov.ShowsApp
 import hr.fvlahov.shows_franko_vlahov.database.ShowsDatabase
 import hr.fvlahov.shows_franko_vlahov.databinding.ActivityMainBinding
+import hr.fvlahov.shows_franko_vlahov.model.api_request.ReviewRequest
+import hr.fvlahov.shows_franko_vlahov.model.api_response.CreateReviewResponse
 import hr.fvlahov.shows_franko_vlahov.model.api_response.ListReviewsResponse
 import hr.fvlahov.shows_franko_vlahov.model.api_response.ListShowsResponse
 import hr.fvlahov.shows_franko_vlahov.networking.ApiModule
@@ -69,7 +72,10 @@ class MainActivity : AppCompatActivity() {
                                     //TODO: Kako da izbjegnen ove fakin usklicnike?!
                                     Executors.newSingleThreadExecutor().execute {
                                         showsDatabase.reviewDao()
-                                            .insertAllReviews(response.body()?.reviews!!.map { it.convertToEntity() })
+                                            .insertAllReviews(response.body()?.reviews!!.map {
+                                                it.convertToEntity()
+                                                    .apply { isSyncedWithApi = true }
+                                            })
                                     }
                                 }
                             }
@@ -78,6 +84,47 @@ class MainActivity : AppCompatActivity() {
                                 //TODO: Handle retrieving all shows error
                             }
                         })
+                }
+
+                Executors.newSingleThreadExecutor().execute {
+                    Log.d("tmp", showsDatabase.reviewDao().getUnsynchedReviews().count().toString())
+
+                    val unsynchedReviews = showsDatabase.reviewDao().getUnsynchedReviews()
+
+                    unsynchedReviews.apply {
+                        this.forEach { it.isSyncedWithApi = true }
+                        showsDatabase.reviewDao().updateReviews(this)
+                    }
+
+                    for (review in unsynchedReviews) {
+                        ApiModule.retrofit.createReview(
+                            ReviewRequest(
+                                review.comment,
+                                review.rating,
+                                review.showId
+                            )
+                        )
+                            .enqueue(object : Callback<CreateReviewResponse> {
+                                override fun onResponse(
+                                    call: Call<CreateReviewResponse>,
+                                    response: Response<CreateReviewResponse>
+                                ) {
+                                    if (response.isSuccessful && response.body() != null) {
+                                        Log.d("Reviews", "Successful creation of review ${response.body()!!.review.id}")
+                                    }
+                                }
+
+                                override fun onFailure(
+                                    call: Call<CreateReviewResponse>,
+                                    t: Throwable
+                                ) {
+                                    //TODO: Proper api failure handling
+                                }
+                            })
+                    }
+
+
+                    Log.d("tmp", showsDatabase.reviewDao().getUnsynchedReviews().count().toString())
                 }
             }
         }

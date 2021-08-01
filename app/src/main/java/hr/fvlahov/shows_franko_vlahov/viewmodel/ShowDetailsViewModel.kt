@@ -104,6 +104,12 @@ class ShowDetailsViewModel(
                             if (response.isSuccessful && response.body() != null) {
                                 //Forgive me father for I have sinned :(
                                 reviewsLiveData.postValue(reviewsLiveData.value!! + response.body()!!.review)
+
+                                Executors.newSingleThreadExecutor().execute {
+                                    database.reviewDao().insertReview(
+                                        response.body()!!.review.convertToEntity()
+                                    )
+                                }
                             }
                         }
 
@@ -111,22 +117,23 @@ class ShowDetailsViewModel(
                             //TODO: Proper api failure handling
                         }
                     })
-            }
-            else{
-                database.reviewDao().insertReview(
-                    ReviewEntity(
-                        0,
-                        comment,
-                        rating,
-                        showId,
-                        false,
-                        preferenceHelper.getCurrentUser()
+            } else {
+                Executors.newSingleThreadExecutor().execute {
+                    database.reviewDao().insertReview(
+                        ReviewEntity(
+                            0,
+                            comment,
+                            rating,
+                            showId,
+                            false,
+                            preferenceHelper.getCurrentUser()
+                        )
                     )
-                )
-                reviewsLiveData.postValue(
-                    database.reviewDao().getReviewsForShow(showId)
-                        .map { it.convertToModel() }
-                )
+                    reviewsLiveData.postValue(
+                        database.reviewDao().getReviewsForShow(showId)
+                            .map { it.convertToModel() }
+                    )
+                }
             }
         }
     }
