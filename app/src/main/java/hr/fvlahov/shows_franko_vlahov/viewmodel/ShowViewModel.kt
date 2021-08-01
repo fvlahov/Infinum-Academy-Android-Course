@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import hr.fvlahov.shows_franko_vlahov.database.ShowsDatabase
-import hr.fvlahov.shows_franko_vlahov.database.entity.ShowEntity
 import hr.fvlahov.shows_franko_vlahov.login.USER_EMAIL
 import hr.fvlahov.shows_franko_vlahov.login.USER_ID
 import hr.fvlahov.shows_franko_vlahov.login.USER_IMAGE
@@ -28,12 +27,12 @@ class ShowViewModel(
     val database: ShowsDatabase
 ) : ViewModel() {
 
-    private val showsApiLiveData: MutableLiveData<List<Show>> by lazy {
+    private val showsLiveData: MutableLiveData<List<Show>> by lazy {
         MutableLiveData<List<Show>>()
     }
 
-    fun getShowsApiLiveData(): LiveData<List<Show>> {
-        return showsApiLiveData
+    fun getShowsLiveData(): LiveData<List<Show>> {
+        return showsLiveData
     }
 
 
@@ -68,17 +67,7 @@ class ShowViewModel(
                             response: Response<ListShowsResponse>
                         ) {
                             if (response.isSuccessful) {
-                                showsApiLiveData.postValue(response.body()?.shows)
-
-                                val showEntities =
-                                    response.body()?.shows?.map { it.convertToEntity() }
-                                if (showEntities != null) {
-                                    Executors.newSingleThreadExecutor().execute {
-                                        database.showDao().insertAllShows(showEntities)
-                                    }
-                                } else {
-                                    //TODO: Handle showEntities null error
-                                }
+                                showsLiveData.postValue(response.body()?.shows)
                             }
                         }
 
@@ -88,7 +77,7 @@ class ShowViewModel(
 
                     })
             } else {
-                showsApiLiveData.postValue(
+                showsLiveData.postValue(
                     database.showDao().getAllShows().map { it.convertToModel() })
             }
         }

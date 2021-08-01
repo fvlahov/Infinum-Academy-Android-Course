@@ -16,6 +16,7 @@ import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import hr.fvlahov.shows_franko_vlahov.R
 import hr.fvlahov.shows_franko_vlahov.databinding.FragmentLoginBinding
+import hr.fvlahov.shows_franko_vlahov.preferences.PreferenceHelper
 import hr.fvlahov.shows_franko_vlahov.register.RegisterFragmentDirections
 import hr.fvlahov.shows_franko_vlahov.utils.NavigationHelper
 import hr.fvlahov.shows_franko_vlahov.utils.NetworkChecker
@@ -60,7 +61,7 @@ class LoginFragment : Fragment() {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
 
         viewModelFactory =
-            LoginViewModelFactory(requireActivity().getPreferences(Activity.MODE_PRIVATE))
+            LoginViewModelFactory(PreferenceHelper(activity?.getPreferences(Activity.MODE_PRIVATE)))
         viewModel = ViewModelProvider(this, viewModelFactory)
             .get(LoginViewModel::class.java)
         return binding.root
@@ -73,10 +74,9 @@ class LoginFragment : Fragment() {
         initInputs()
 
         viewModel.getLoginResultLiveData()
-            .observe(this.viewLifecycleOwner) { isLoginSuccessful ->
+            .observe(viewLifecycleOwner) { isLoginSuccessful ->
                 if (isLoginSuccessful) {
                     rememberMeOnLogin(binding.checkboxRememberMe.isChecked)
-                    saveUserEmail()
                     navigateToShows()
                 } else {
                     binding.containerEmail.error = getString(R.string.email_password_dont_match)

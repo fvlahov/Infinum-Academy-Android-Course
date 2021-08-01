@@ -13,7 +13,7 @@ interface ShowDao {
     fun getAllShows() : List<ShowEntity>
 
     @Query("SELECT * FROM shows WHERE idShow IS :idShow")
-    fun getShow(idShow: String) : LiveData<ShowEntity>
+    fun getShow(idShow: String) : ShowEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllShows(shows: List<ShowEntity>)

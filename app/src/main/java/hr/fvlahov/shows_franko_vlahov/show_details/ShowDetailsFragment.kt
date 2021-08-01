@@ -1,5 +1,6 @@
 package hr.fvlahov.shows_franko_vlahov.show_details
 
+import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,18 +8,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import hr.fvlahov.shows_franko_vlahov.R
+import hr.fvlahov.shows_franko_vlahov.ShowsApp
 import hr.fvlahov.shows_franko_vlahov.databinding.DialogAddReviewBinding
 import hr.fvlahov.shows_franko_vlahov.databinding.FragmentShowDetailsBinding
 import hr.fvlahov.shows_franko_vlahov.model.api_response.Review
 import hr.fvlahov.shows_franko_vlahov.model.api_response.Show
+import hr.fvlahov.shows_franko_vlahov.preferences.PreferenceHelper
 import hr.fvlahov.shows_franko_vlahov.shows.ReviewsAdapter
 import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowDetailsViewModel
+import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowDetailsViewModelFactory
+import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowViewModelFactory
 
 class ShowDetailsFragment : Fragment() {
 
@@ -29,7 +35,9 @@ class ShowDetailsFragment : Fragment() {
 
     private var reviewsAdapter: ReviewsAdapter? = null
 
-    private val viewModel: ShowDetailsViewModel by viewModels()
+    private val viewModel: ShowDetailsViewModel by viewModels {
+        ShowDetailsViewModelFactory((activity?.application as ShowsApp).showsDatabase)
+    }
 
 
     override fun onCreateView(
@@ -50,7 +58,7 @@ class ShowDetailsFragment : Fragment() {
         viewModel.getShow(args.showId)
         viewModel.getReviewsForShow(args.showId)
         viewModel.getShowLiveData().observe(
-            requireActivity(),
+            viewLifecycleOwner,
             { show ->
                 updateShow(show)
                 setRatings(show)
@@ -150,7 +158,12 @@ class ShowDetailsFragment : Fragment() {
     }
 
     private fun addReview(comment: String, rating: Int, showId: Int) {
-        viewModel.addReview(comment, rating, showId)
+        viewModel.addReview(
+            comment = comment,
+            rating = rating,
+            showId = showId,
+            preferenceHelper = PreferenceHelper(activity?.getPreferences(Activity.MODE_PRIVATE))
+        )
 
         updateReviewsAndRatingsVisibility()
     }

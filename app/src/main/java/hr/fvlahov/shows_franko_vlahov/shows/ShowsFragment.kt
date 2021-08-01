@@ -30,15 +30,10 @@ import hr.fvlahov.shows_franko_vlahov.login.USER_EMAIL
 import hr.fvlahov.shows_franko_vlahov.login.USER_IMAGE
 import hr.fvlahov.shows_franko_vlahov.model.api_response.Show
 import hr.fvlahov.shows_franko_vlahov.utils.FileUtil
-import hr.fvlahov.shows_franko_vlahov.utils.NetworkChecker
 import hr.fvlahov.shows_franko_vlahov.utils.preparePermissionsContract
 import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowViewModel
 import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowViewModelFactory
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.lang.Exception
-import java.util.concurrent.Executor
-import java.util.concurrent.Executors
 
 class ShowsFragment : Fragment() {
 
@@ -86,7 +81,7 @@ class ShowsFragment : Fragment() {
     }
 
     private fun initViewModelLiveData() {
-        viewModel.getShowsApiLiveData().observe(
+        viewModel.getShowsLiveData().observe(
             viewLifecycleOwner,
             { shows ->
                 updateShows(shows)

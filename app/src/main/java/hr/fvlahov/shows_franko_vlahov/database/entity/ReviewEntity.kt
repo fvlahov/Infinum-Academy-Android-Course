@@ -12,7 +12,7 @@ import hr.fvlahov.shows_franko_vlahov.model.api_response.User
     )]
 )
 data class ReviewEntity(
-    @PrimaryKey @ColumnInfo(name = "idReview") val id: Int,
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "idReview") val id: Int,
     @ColumnInfo(name = "comment") val comment: String,
     @ColumnInfo(name = "rating") val rating: Int,
     @ColumnInfo(name = "showId") val showId: Int,

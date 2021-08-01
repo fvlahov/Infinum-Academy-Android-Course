@@ -10,6 +10,6 @@ class ShowViewModelFactory(val database: ShowsDatabase) : ViewModelProvider.Fact
         if (modelClass.isAssignableFrom(ShowViewModel::class.java)) {
             return ShowViewModel(database) as T
         }
-        throw IllegalArgumentException("Sorry, ne mozemo radit s ne SuperheroesViewModel klasama")
+        throw IllegalArgumentException("Class must be asignable from ShowViewModel!")
     }
 }

@@ -14,7 +14,7 @@ import hr.fvlahov.shows_franko_vlahov.database.entity.ShowEntity
         ShowEntity::class,
         ReviewEntity::class
     ],
-    version = 1
+    version = 2
 )
 
 abstract class ShowsDatabase : RoomDatabase(){
