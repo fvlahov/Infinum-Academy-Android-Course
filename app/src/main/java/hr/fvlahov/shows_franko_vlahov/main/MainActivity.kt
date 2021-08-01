@@ -87,7 +87,6 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 Executors.newSingleThreadExecutor().execute {
-                    Log.d("Reviews", showsDatabase.reviewDao().getUnsynchedReviews().count().toString())
 
                     val unsynchedReviews = showsDatabase.reviewDao().getUnsynchedReviews()
 
@@ -122,9 +121,6 @@ class MainActivity : AppCompatActivity() {
                                 }
                             })
                     }
-
-
-                    Log.d("Reviews", showsDatabase.reviewDao().getUnsynchedReviews().count().toString())
                 }
             }
         }
