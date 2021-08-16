@@ -77,9 +77,14 @@ class ShowsFragment : Fragment() {
         initShowHideEmptyStateButton()
 
         binding.buttonShowProfile.setOnClickListener { onShowProfileClicked() }
+        binding.chipTopRated.setOnClickListener { onTopRatedClicked(binding.chipTopRated.isChecked) }
         viewModel.getShows()
 
         initViewModelLiveData()
+    }
+
+    private fun onTopRatedClicked(isChecked: Boolean) {
+        TODO("Not yet implemented")
     }
 
     private fun initViewModelLiveData() {

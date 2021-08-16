@@ -24,22 +24,41 @@
         style="@style/TextLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/activity_shows_view_padding_top"
+        android:layout_marginTop="32dp"
         android:text="@string/shows"
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/buttonShowProfile" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chipTopRated"
+        style="@style/com.google.android.material.chip.Chip.Shows"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checkable="true"
+        android:checked="false"
+        android:text="@string/top_rated"
+        app:chipBackgroundColor="@drawable/chip_color_selector_inverted"
+        app:chipIcon="@drawable/ic_heart"
+        app:chipIconSize="16dp"
+        app:chipIconTint="@drawable/chip_color_selector"
+        app:chipStartPadding="8dp"
+        app:chipStrokeColor="@drawable/chip_color_selector"
+        app:layout_constraintBottom_toBottomOf="@id/labelShows"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/labelShows"
+        tools:checked="true" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonShowHideEmptyState"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:layout_marginTop="@dimen/activity_shows_view_padding_top"
         android:backgroundTint="@color/purple_background"
         android:padding="16dp"
         android:text="Show/hide empty state"
         android:textColor="@color/white"
+        android:visibility="gone"
         app:cornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="@id/labelShows"
         app:layout_constraintEnd_toEndOf="parent"
@@ -50,7 +69,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="labelShows,buttonShowHideEmptyState"/>
+        app:constraint_referenced_ids="labelShows,buttonShowHideEmptyState" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerShows"
@@ -58,8 +77,8 @@
         android:layout_height="0dp"
         android:layout_marginTop="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barrier"
         tools:listitem="@layout/view_show_item" />
 

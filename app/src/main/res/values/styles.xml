@@ -66,5 +66,12 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="com.google.android.material.chip.Chip.Shows" parent="Widget.MaterialComponents.Chip.Action">
+        <item name="android:textColor">@drawable/chip_color_selector</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipStrokeColor">?attr/colorPrimary</item>
+        <item name="checkedIconVisible">false</item>
+    </style>
+
     <dimen name="bottomSheetCornerSize">16dp</dimen>
 </resources>
