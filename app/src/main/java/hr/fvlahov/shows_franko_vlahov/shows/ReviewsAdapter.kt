@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import hr.fvlahov.shows_franko_vlahov.R
-import hr.fvlahov.shows_franko_vlahov.databinding.ItemReviewBinding
+import hr.fvlahov.shows_franko_vlahov.databinding.ViewReviewItemBinding
 import hr.fvlahov.shows_franko_vlahov.model.api_response.Review
 
 class ReviewsAdapter(
@@ -15,7 +15,7 @@ class ReviewsAdapter(
 ) : RecyclerView.Adapter<ReviewsAdapter.ReviewViewHolder>()  {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewViewHolder {
-        val binding = ItemReviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ViewReviewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         val holder = ReviewViewHolder(binding)
 
         return holder
@@ -34,13 +34,13 @@ class ReviewsAdapter(
         notifyDataSetChanged()
     }
 
-    inner class ReviewViewHolder(private val binding: ItemReviewBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ReviewViewHolder(private val binding: ViewReviewItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Review){
             binding.labelReview.text = item.comment
             binding.labelReviewerName.text = item.user.email
 
             try {
-                Glide.with(binding.root).load(item.user.imageUrl).into(binding.imageReviewer)
+                Glide.with(binding.root).load(item.user.imageUrl).circleCrop().into(binding.imageReviewer)
             } catch (e: java.lang.Exception) {
                 binding.imageReviewer.setImageResource(R.drawable.ic_profile_placeholder)
             }

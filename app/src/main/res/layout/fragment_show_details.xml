@@ -93,7 +93,7 @@
                 android:paddingBottom="48dp"
                 android:nestedScrollingEnabled="false"
                 tools:itemCount="3"
-                tools:listitem="@layout/item_review" />
+                tools:listitem="@layout/view_review_item" />
 
             <TextView
                 android:id="@+id/labelNoReviews"

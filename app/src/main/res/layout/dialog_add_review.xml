@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
     android:orientation="vertical"
     android:paddingStart="24dp"
     android:paddingTop="40dp"
     android:paddingEnd="24dp"
-    android:paddingBottom="24dp">
+    android:paddingBottom="24dp"
+    >
 
     <TextView
         android:layout_width="match_parent"
@@ -39,7 +39,6 @@
         android:visibility="gone"
         tools:visibility="visible" />
 
-    <!--    Iz nekog razloga postavljanjem boxStrokeColora u neku boju makne boxStroke skroz??-->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/containerReview"
         style="@style/PurpleTextInputLayout"

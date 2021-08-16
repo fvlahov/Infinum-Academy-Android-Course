@@ -19,6 +19,7 @@ import hr.fvlahov.shows_franko_vlahov.R
 import hr.fvlahov.shows_franko_vlahov.ShowsApp
 import hr.fvlahov.shows_franko_vlahov.databinding.DialogAddReviewBinding
 import hr.fvlahov.shows_franko_vlahov.databinding.FragmentShowDetailsBinding
+import hr.fvlahov.shows_franko_vlahov.item_decorators.SimpleDividerItemDecoration
 import hr.fvlahov.shows_franko_vlahov.model.api_response.Review
 import hr.fvlahov.shows_franko_vlahov.model.api_response.Show
 import hr.fvlahov.shows_franko_vlahov.preferences.PreferenceHelper
@@ -103,6 +104,8 @@ class ShowDetailsFragment : Fragment() {
     private fun initReviewsRecycler() {
         binding.recyclerReviews.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        binding.recyclerReviews.addItemDecoration(SimpleDividerItemDecoration(requireContext(), R.drawable.line_divider))
+
         reviewsAdapter = ReviewsAdapter(listOf())
         binding.recyclerReviews.adapter = reviewsAdapter
 
@@ -137,7 +140,6 @@ class ShowDetailsFragment : Fragment() {
 
     private fun onWriteReviewClicked() {
         val dialog = BottomSheetDialog(this.requireContext())
-
         val bottomSheetBinding = DialogAddReviewBinding.inflate(layoutInflater)
         dialog.setContentView(bottomSheetBinding.root)
 

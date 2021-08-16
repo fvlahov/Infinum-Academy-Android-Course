@@ -40,12 +40,7 @@ class PreferenceHelper(private val preferences: SharedPreferences?) {
     }
 
     fun saveCurrentUser(id: Int, email: String, imageUrl: String?) {
-        with(preferences?.edit()) {
-            this?.putInt(USER_ID, id)
-            this?.putString(USER_EMAIL, email)
-            this?.putString(USER_IMAGE, imageUrl)
-            this?.apply()
-        }
+        saveCurrentUser(User(id, email, imageUrl))
     }
 
     fun getCurrentUser(): User =
