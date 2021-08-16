@@ -1,9 +1,8 @@
-package hr.fvlahov.shows_franko_vlahov.shows
+package hr.fvlahov.shows_franko_vlahov.show_details
 
-import android.net.Uri
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import hr.fvlahov.shows_franko_vlahov.R
@@ -37,6 +36,8 @@ class ReviewsAdapter(
     inner class ReviewViewHolder(private val binding: ViewReviewItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Review){
             binding.labelReview.text = item.comment
+            binding.labelReview.isVisible = item.comment.isNotEmpty()
+
             binding.labelReviewerName.text = item.user.email
 
             try {

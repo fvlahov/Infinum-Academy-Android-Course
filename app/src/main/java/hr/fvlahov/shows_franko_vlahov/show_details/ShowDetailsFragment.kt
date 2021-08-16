@@ -1,15 +1,12 @@
 package hr.fvlahov.shows_franko_vlahov.show_details
 
 import android.app.Activity
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,10 +20,8 @@ import hr.fvlahov.shows_franko_vlahov.item_decorators.SimpleDividerItemDecoratio
 import hr.fvlahov.shows_franko_vlahov.model.api_response.Review
 import hr.fvlahov.shows_franko_vlahov.model.api_response.Show
 import hr.fvlahov.shows_franko_vlahov.preferences.PreferenceHelper
-import hr.fvlahov.shows_franko_vlahov.shows.ReviewsAdapter
 import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowDetailsViewModel
 import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowDetailsViewModelFactory
-import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowViewModelFactory
 
 class ShowDetailsFragment : Fragment() {
 
