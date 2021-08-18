@@ -8,10 +8,7 @@ import hr.fvlahov.shows_franko_vlahov.database.ShowsDatabase
 import hr.fvlahov.shows_franko_vlahov.login.USER_EMAIL
 import hr.fvlahov.shows_franko_vlahov.login.USER_ID
 import hr.fvlahov.shows_franko_vlahov.login.USER_IMAGE
-import hr.fvlahov.shows_franko_vlahov.model.api_response.ListShowsResponse
-import hr.fvlahov.shows_franko_vlahov.model.api_response.LoginResponse
-import hr.fvlahov.shows_franko_vlahov.model.api_response.Show
-import hr.fvlahov.shows_franko_vlahov.model.api_response.User
+import hr.fvlahov.shows_franko_vlahov.model.api_response.*
 import hr.fvlahov.shows_franko_vlahov.networking.ApiModule
 import hr.fvlahov.shows_franko_vlahov.utils.NetworkChecker
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -55,7 +52,7 @@ class ShowViewModel(
     }
 
     //If you have a network connection retrieve data from API and save it to DB, otherwise retrieve from DB
-    fun getShows() {
+    fun getAllShows() {
         Executors.newSingleThreadExecutor().execute {
             if (NetworkChecker().checkInternetConnectivity()) {
                 //TODO: Repository pattern -> handles retrieving data based on internet connection
@@ -79,6 +76,29 @@ class ShowViewModel(
             } else {
                 showsLiveData.postValue(
                     database.showDao().getAllShows().map { it.convertToModel() })
+            }
+        }
+    }
+
+    fun getTopRatedShows() {
+        Executors.newSingleThreadExecutor().execute {
+            if (NetworkChecker().checkInternetConnectivity()) {
+                ApiModule.retrofit.getTopRatedShows()
+                    .enqueue(object : Callback<ListTopRatedShowsResponse> {
+                        override fun onResponse(
+                            call: Call<ListTopRatedShowsResponse>,
+                            response: Response<ListTopRatedShowsResponse>
+                        ) {
+                            if (response.isSuccessful) {
+                                showsLiveData.postValue(response.body()?.shows)
+                            }
+                        }
+
+                        override fun onFailure(call: Call<ListTopRatedShowsResponse>, t: Throwable) {
+                            //TODO: Handle retrieving all shows error
+                        }
+
+                    })
             }
         }
     }

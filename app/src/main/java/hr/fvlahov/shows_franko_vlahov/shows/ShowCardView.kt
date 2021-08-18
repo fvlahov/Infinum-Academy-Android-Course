@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import hr.fvlahov.shows_franko_vlahov.R
 import hr.fvlahov.shows_franko_vlahov.databinding.ViewShowItemBinding
@@ -51,7 +52,7 @@ class ShowCardView @JvmOverloads constructor(
         binding.labelShowDescription.text = description
     }
 
-    fun setImage(imageUrl: String?){
+    fun setImage(imageUrl: String?) {
         try {
             Glide.with(binding.root).load(imageUrl)
                 .into(binding.imageShowImage)
@@ -60,7 +61,7 @@ class ShowCardView @JvmOverloads constructor(
         }
     }
 
-    fun setCardOnClickListener(listener: OnClickListener){
+    fun setCardOnClickListener(listener: OnClickListener) {
         binding.cardShows.setOnClickListener(listener)
     }
 
@@ -68,5 +69,9 @@ class ShowCardView @JvmOverloads constructor(
         setTitle(show.title)
         setDescription(show.description)
         setImage(show.imageUrl)
+    }
+
+    fun setDescriptionVisibility(isVisible: Boolean) {
+        binding.labelShowDescription.isVisible = isVisible
     }
 }

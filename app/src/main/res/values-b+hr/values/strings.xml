@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name" translatable="false">Shows-Franko_Vlahov</string>
-    <string name="in_order_to_continue_please_log_in">In order to continue please log in.</string>
     <string name="login">Login</string>
     <string name="email" translatable="false">Email</string>
     <string name="password">Password</string>

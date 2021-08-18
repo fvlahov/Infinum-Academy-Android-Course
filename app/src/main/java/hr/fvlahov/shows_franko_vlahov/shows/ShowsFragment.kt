@@ -1,6 +1,5 @@
 package hr.fvlahov.shows_franko_vlahov.shows
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.net.Uri
@@ -9,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.OvershootInterpolator
 import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -42,6 +43,7 @@ class ShowsFragment : Fragment() {
     }
 
     private var showsVisibility = false
+    private var isVerticalLayout = true
 
     private var _binding: FragmentShowsBinding? = null
     private val binding get() = _binding!!
@@ -78,13 +80,50 @@ class ShowsFragment : Fragment() {
 
         binding.buttonShowProfile.setOnClickListener { onShowProfileClicked() }
         binding.chipTopRated.setOnClickListener { onTopRatedClicked(binding.chipTopRated.isChecked) }
-        viewModel.getShows()
+        binding.fabChangeLayout.setOnClickListener { onChangeLayoutClicked() }
+        viewModel.getAllShows()
 
         initViewModelLiveData()
     }
 
-    private fun onTopRatedClicked(isChecked: Boolean) {
-        TODO("Not yet implemented")
+    private fun initShowsRecyclerView() {
+        binding.recyclerShows.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+
+        adapter = ShowsAdapter(listOf()) { show ->
+            onShowClicked(show)
+        }
+        binding.recyclerShows.adapter = adapter
+    }
+
+    private fun onChangeLayoutClicked() {
+        //Change to grid
+        if(isVerticalLayout){
+            adapter?.isLayoutGrid = true
+            binding.recyclerShows.layoutManager =
+                GridLayoutManager(activity, 2)
+            binding.fabChangeLayout.animate().rotationBy(90f)
+        }
+        //Change to vertical
+        else{
+            adapter?.isLayoutGrid = false
+            binding.recyclerShows.layoutManager =
+                LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            binding.fabChangeLayout.animate().rotationBy(-90f)
+        }
+
+        //notifiyItemRangeChanged animates the changing of layout
+        adapter?.notifyItemRangeChanged(0, adapter?.itemCount ?: 0)
+        isVerticalLayout = !isVerticalLayout
+    }
+
+    private fun onTopRatedClicked(isTopRatedChecked: Boolean) {
+        if(isTopRatedChecked){
+            viewModel.getTopRatedShows()
+        }
+        else{
+            viewModel.getAllShows()
+        }
     }
 
     private fun initViewModelLiveData() {
@@ -232,16 +271,6 @@ class ShowsFragment : Fragment() {
             binding.imageEmptyShows.visibility = View.GONE
             binding.labelEmptyShows.visibility = View.GONE
         }
-    }
-
-    private fun initShowsRecyclerView() {
-        binding.recyclerShows.layoutManager =
-            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-
-        adapter = ShowsAdapter(listOf()) { show ->
-            onShowClicked(show)
-        }
-        binding.recyclerShows.adapter = adapter
     }
 
     private fun onShowClicked(show: Show) {

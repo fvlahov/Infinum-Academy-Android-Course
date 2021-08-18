@@ -10,6 +10,8 @@ import hr.fvlahov.shows_franko_vlahov.model.api_response.*
 import hr.fvlahov.shows_franko_vlahov.networking.ApiModule
 import hr.fvlahov.shows_franko_vlahov.preferences.PreferenceHelper
 import hr.fvlahov.shows_franko_vlahov.utils.NetworkChecker
+import hr.fvlahov.shows_franko_vlahov.utils.addToStart
+import hr.fvlahov.shows_franko_vlahov.utils.plusAssign
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -103,7 +105,8 @@ class ShowDetailsViewModel(
                         ) {
                             if (response.isSuccessful && response.body() != null) {
                                 //Forgive me father for I have sinned :(
-                                reviewsLiveData.postValue(reviewsLiveData.value!! + response.body()!!.review)
+
+                                reviewsLiveData.addToStart(response.body()!!.review)
 
                                 Executors.newSingleThreadExecutor().execute {
                                     database.reviewDao().insertReview(
