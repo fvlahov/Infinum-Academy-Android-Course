@@ -18,7 +18,10 @@ import retrofit2.Response
 import java.util.concurrent.Executors
 
 class ShowDetailsViewModel(
-    val database: ShowsDatabase
+    val database: ShowsDatabase,
+    private val onReviewsLoadedCallback: (Unit) -> Unit,
+    private val onShowLoadedCallback: (Unit) -> Unit,
+    private val onReviewAddedCallback: (Unit) -> Unit
 ) : ViewModel() {
 
     private val showLiveData: MutableLiveData<Show> by lazy {
@@ -50,6 +53,7 @@ class ShowDetailsViewModel(
                         ) {
                             if (response.isSuccessful) {
                                 showLiveData.postValue(response.body()?.show)
+                                onShowLoadedCallback(Unit)
                             }
                         }
 
@@ -62,6 +66,7 @@ class ShowDetailsViewModel(
                 showLiveData.postValue(
                     database.showDao().getShow(showId).convertToModel()
                 )
+                onShowLoadedCallback(Unit)
             }
         }
     }
@@ -77,6 +82,7 @@ class ShowDetailsViewModel(
                         ) {
                             if (response.isSuccessful) {
                                 reviewsLiveData.postValue(response.body()?.reviews)
+                                onReviewsLoadedCallback(Unit)
                             }
                         }
 
@@ -90,6 +96,7 @@ class ShowDetailsViewModel(
                     database.reviewDao().getReviewsForShow(showId.toInt())
                         .map { it.convertToModel() }
                 )
+                onReviewsLoadedCallback(Unit)
             }
         }
     }
@@ -113,6 +120,7 @@ class ShowDetailsViewModel(
                                         response.body()!!.review.convertToEntity()
                                     )
                                 }
+                                onReviewAddedCallback(Unit)
                             }
                         }
 
@@ -136,6 +144,7 @@ class ShowDetailsViewModel(
                         database.reviewDao().getReviewsForShow(showId)
                             .map { it.convertToModel() }
                     )
+                    onReviewAddedCallback(Unit)
                 }
             }
         }

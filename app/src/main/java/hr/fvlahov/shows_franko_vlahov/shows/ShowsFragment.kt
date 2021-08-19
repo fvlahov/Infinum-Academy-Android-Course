@@ -84,7 +84,9 @@ class ShowsFragment : BaseFragment() {
         initShowHideEmptyStateButton()
 
         binding.buttonShowProfile.setOnClickListener { onShowProfileClicked() }
+
         binding.chipTopRated.setOnClickListener { onTopRatedClicked(binding.chipTopRated.isChecked) }
+
         binding.fabChangeLayout.setOnClickListener { onChangeLayoutClicked() }
         viewModel.getAllShows()
 

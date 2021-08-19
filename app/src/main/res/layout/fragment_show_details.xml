@@ -16,6 +16,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="?attr/homeAsUpIndicator" />
 
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollBody"
         android:layout_width="match_parent"
@@ -37,9 +38,16 @@
                 style="@style/TextLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="56dp"
                 android:textColor="@color/black"
                 tools:text="The Office" />
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progressLinear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="56dp"
+                android:indeterminate="true" />
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/imageShowImage"
@@ -90,8 +98,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
-                android:paddingBottom="48dp"
                 android:nestedScrollingEnabled="false"
+                android:paddingBottom="48dp"
                 tools:itemCount="3"
                 tools:listitem="@layout/view_review_item" />
 
@@ -99,9 +107,9 @@
                 android:id="@+id/labelNoReviews"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:layout_marginVertical="40dp"
-                android:text="@string/no_reviews_yet"/>
+                android:gravity="center"
+                android:text="@string/no_reviews_yet" />
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

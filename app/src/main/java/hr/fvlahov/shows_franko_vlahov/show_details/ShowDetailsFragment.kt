@@ -34,9 +34,13 @@ class ShowDetailsFragment : Fragment() {
     private var reviewsAdapter: ReviewsAdapter? = null
 
     private val viewModel: ShowDetailsViewModel by viewModels {
-        ShowDetailsViewModelFactory((activity?.application as ShowsApp).showsDatabase)
+        ShowDetailsViewModelFactory(
+            (activity?.application as ShowsApp).showsDatabase,
+            { },
+            { hideProgressBar() },
+            { hideProgressBar() }
+        )
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,6 +71,10 @@ class ShowDetailsFragment : Fragment() {
                 updateReviews(reviews)
             }
         )
+    }
+
+    private fun hideProgressBar() {
+        binding.progressLinear.hide()
     }
 
     private fun updateShow(show: Show) {
@@ -100,7 +108,12 @@ class ShowDetailsFragment : Fragment() {
     private fun initReviewsRecycler() {
         binding.recyclerReviews.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        binding.recyclerReviews.addItemDecoration(SimpleDividerItemDecoration(requireContext(), R.drawable.line_divider))
+        binding.recyclerReviews.addItemDecoration(
+            SimpleDividerItemDecoration(
+                requireContext(),
+                R.drawable.line_divider
+            )
+        )
 
         reviewsAdapter = ReviewsAdapter(listOf())
         binding.recyclerReviews.adapter = reviewsAdapter
@@ -156,6 +169,8 @@ class ShowDetailsFragment : Fragment() {
     }
 
     private fun addReview(comment: String, rating: Int, showId: Int) {
+        binding.progressLinear.show()
+
         viewModel.addReview(
             comment = comment,
             rating = rating,
