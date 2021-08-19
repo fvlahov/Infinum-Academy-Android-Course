@@ -24,6 +24,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import hr.fvlahov.shows_franko_vlahov.BuildConfig
 import hr.fvlahov.shows_franko_vlahov.R
 import hr.fvlahov.shows_franko_vlahov.ShowsApp
+import hr.fvlahov.shows_franko_vlahov.core.BaseFragment
 import hr.fvlahov.shows_franko_vlahov.databinding.DialogProfileBinding
 import hr.fvlahov.shows_franko_vlahov.databinding.FragmentShowsBinding
 import hr.fvlahov.shows_franko_vlahov.login.REMEMBER_ME_LOGIN
@@ -36,10 +37,10 @@ import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowViewModel
 import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowViewModelFactory
 import java.lang.Exception
 
-class ShowsFragment : Fragment() {
+class ShowsFragment : BaseFragment() {
 
     private val viewModel: ShowViewModel by viewModels {
-        ShowViewModelFactory((activity?.application as ShowsApp).showsDatabase)
+        ShowViewModelFactory((activity?.application as ShowsApp).showsDatabase) { onShowsLoaded() }
     }
 
     private var showsVisibility = false
@@ -75,6 +76,10 @@ class ShowsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding.progressLinear.show()
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            onRefreshShows()
+        }
         initShowsRecyclerView()
         initShowHideEmptyStateButton()
 
@@ -84,6 +89,15 @@ class ShowsFragment : Fragment() {
         viewModel.getAllShows()
 
         initViewModelLiveData()
+    }
+
+    private fun onRefreshShows() {
+        if (binding.chipTopRated.isChecked) {
+            viewModel.getTopRatedShows()
+        } else {
+            viewModel.getAllShows()
+        }
+        binding.swipeRefreshLayout.isRefreshing = false
     }
 
     private fun initShowsRecyclerView() {
@@ -98,14 +112,14 @@ class ShowsFragment : Fragment() {
 
     private fun onChangeLayoutClicked() {
         //Change to grid
-        if(isVerticalLayout){
+        if (isVerticalLayout) {
             adapter?.isLayoutGrid = true
             binding.recyclerShows.layoutManager =
                 GridLayoutManager(activity, 2)
             binding.fabChangeLayout.animate().rotationBy(90f)
         }
         //Change to vertical
-        else{
+        else {
             adapter?.isLayoutGrid = false
             binding.recyclerShows.layoutManager =
                 LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -118,13 +132,19 @@ class ShowsFragment : Fragment() {
     }
 
     private fun onTopRatedClicked(isTopRatedChecked: Boolean) {
-        if(isTopRatedChecked){
+        binding.progressLinear.show()
+        if (isTopRatedChecked) {
             viewModel.getTopRatedShows()
-        }
-        else{
+        } else {
             viewModel.getAllShows()
         }
     }
+
+
+    private fun onShowsLoaded() {
+        binding.progressLinear.hide()
+    }
+
 
     private fun initViewModelLiveData() {
         viewModel.getShowsLiveData().observe(
@@ -139,7 +159,12 @@ class ShowsFragment : Fragment() {
             requireActivity(),
             { user ->
                 setProfileImageIfExists(binding.buttonShowProfile, user.imageUrl)
-                profileBottomSheetAvatarImageView?.let { setProfileImageIfExists(it, user.imageUrl) }
+                profileBottomSheetAvatarImageView?.let {
+                    setProfileImageIfExists(
+                        it,
+                        user.imageUrl
+                    )
+                }
                 saveImageUrlToPrefs(user.imageUrl)
             })
     }

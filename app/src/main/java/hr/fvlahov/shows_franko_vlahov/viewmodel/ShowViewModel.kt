@@ -21,7 +21,8 @@ import java.io.File
 import java.util.concurrent.Executors
 
 class ShowViewModel(
-    val database: ShowsDatabase
+    val database: ShowsDatabase,
+    private val onShowsLoadCallback: (Unit) -> Unit
 ) : ViewModel() {
 
     private val showsLiveData: MutableLiveData<List<Show>> by lazy {
@@ -65,6 +66,7 @@ class ShowViewModel(
                         ) {
                             if (response.isSuccessful) {
                                 showsLiveData.postValue(response.body()?.shows)
+                                onShowsLoadCallback(Unit)
                             }
                         }
 
@@ -76,6 +78,7 @@ class ShowViewModel(
             } else {
                 showsLiveData.postValue(
                     database.showDao().getAllShows().map { it.convertToModel() })
+                onShowsLoadCallback(Unit)
             }
         }
     }
@@ -91,6 +94,7 @@ class ShowViewModel(
                         ) {
                             if (response.isSuccessful) {
                                 showsLiveData.postValue(response.body()?.shows)
+                                onShowsLoadCallback(Unit)
                             }
                         }
 
@@ -113,6 +117,7 @@ class ShowViewModel(
                     response: Response<LoginResponse>
                 ) {
                     profileLiveData.postValue(response.body()?.user)
+                    onShowsLoadCallback(Unit)
                 }
 
                 override fun onFailure(call: Call<LoginResponse>, t: Throwable) {

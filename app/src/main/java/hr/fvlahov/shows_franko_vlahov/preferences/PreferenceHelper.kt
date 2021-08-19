@@ -1,6 +1,5 @@
 package hr.fvlahov.shows_franko_vlahov.preferences
 
-import android.content.Context
 import android.content.SharedPreferences
 import hr.fvlahov.shows_franko_vlahov.login.USER_EMAIL
 import hr.fvlahov.shows_franko_vlahov.login.USER_ID

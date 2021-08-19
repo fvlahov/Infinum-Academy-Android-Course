@@ -2,16 +2,27 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintShows"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingHorizontal="@dimen/defaultLeftRightPadding"
     tools:context=".shows.ShowsFragment">
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progressLinear"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:indeterminate="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/barrier" />
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/buttonShowProfile"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginTop="24dp"
+        android:layout_marginEnd="@dimen/defaultLeftRightPadding"
         android:padding="0dp"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_krv_nije_voda"
@@ -24,6 +35,7 @@
         style="@style/TextLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/defaultLeftRightPadding"
         android:layout_marginTop="32dp"
         android:text="@string/shows"
         android:textColor="@color/black"
@@ -35,6 +47,7 @@
         style="@style/com.google.android.material.chip.Chip.Shows"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/defaultLeftRightPadding"
         android:checkable="true"
         android:checked="false"
         android:text="@string/top_rated"
@@ -71,16 +84,24 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="labelShows,buttonShowHideEmptyState" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerShows"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/barrier"
-        tools:listitem="@layout/view_show_item" />
+        app:layout_constraintTop_toBottomOf="@id/barrier">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerShows"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="@dimen/defaultLeftRightPadding"
+            tools:listitem="@layout/view_show_item" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
     <ImageView
         android:id="@+id/imageEmptyShows"
@@ -106,8 +127,9 @@
         android:id="@+id/fabChangeLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="16dp"
-        android:src="@drawable/ic_layout"/>
+        android:layout_marginEnd="@dimen/defaultLeftRightPadding"
+        android:src="@drawable/ic_layout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
