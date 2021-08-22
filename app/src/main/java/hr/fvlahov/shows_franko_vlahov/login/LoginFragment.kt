@@ -8,16 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import hr.fvlahov.shows_franko_vlahov.R
+import hr.fvlahov.shows_franko_vlahov.core.BaseFragment
 import hr.fvlahov.shows_franko_vlahov.databinding.FragmentLoginBinding
 import hr.fvlahov.shows_franko_vlahov.preferences.PreferenceHelper
-import hr.fvlahov.shows_franko_vlahov.register.RegisterFragmentDirections
 import hr.fvlahov.shows_franko_vlahov.utils.NavigationHelper
 import hr.fvlahov.shows_franko_vlahov.utils.NetworkChecker
 import hr.fvlahov.shows_franko_vlahov.utils.ValidationHelper
@@ -32,7 +30,7 @@ const val USER_ID = "userId"
 const val MIN_EMAIL_LENGTH = 1
 const val MIN_PASSWORD_LENGTH = 6
 
-class LoginFragment : Fragment() {
+class LoginFragment : BaseFragment() {
     private var _binding: FragmentLoginBinding? = null
 
     private val binding get() = _binding!!
@@ -61,13 +59,20 @@ class LoginFragment : Fragment() {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
 
         viewModelFactory =
-            LoginViewModelFactory(PreferenceHelper(activity?.getPreferences(Activity.MODE_PRIVATE)))
+            LoginViewModelFactory(
+                PreferenceHelper(activity?.getPreferences(Activity.MODE_PRIVATE))
+            ) { hideProgressIndicator() }
         viewModel = ViewModelProvider(this, viewModelFactory)
             .get(LoginViewModel::class.java)
         return binding.root
     }
 
+    private fun hideProgressIndicator() {
+        binding.progressCircular.hide()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        hideProgressIndicator()
         NavigationHelper().setNavigationVisibility(activity, false)
         updateViewsIfRegistrationSuccessful(args.registerSuccessful)
         initLoginButton()
@@ -140,6 +145,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun attemptLogin() {
+        binding.progressCircular.show()
         Executors.newSingleThreadExecutor().execute {
             if (NetworkChecker().checkInternetConnectivity()) {
                 viewModel.login(

@@ -9,4 +9,5 @@
     <dimen name="show_card_top_left_right_padding">4dp</dimen>
     <dimen name="show_card_bottom_padding">16dp</dimen>
     <dimen name="circular_progress_elevation">24dp</dimen>
+    <dimen name="bottomSheetCornerSize">16dp</dimen>
 </resources>

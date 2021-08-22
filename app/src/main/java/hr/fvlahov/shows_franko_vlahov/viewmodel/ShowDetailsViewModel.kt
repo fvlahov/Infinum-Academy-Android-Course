@@ -2,7 +2,9 @@ package hr.fvlahov.shows_franko_vlahov.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import hr.fvlahov.shows_franko_vlahov.core.ErrorType
 import hr.fvlahov.shows_franko_vlahov.database.ShowsDatabase
 import hr.fvlahov.shows_franko_vlahov.database.entity.ReviewEntity
 import hr.fvlahov.shows_franko_vlahov.model.api_request.ReviewRequest
@@ -19,9 +21,10 @@ import java.util.concurrent.Executors
 
 class ShowDetailsViewModel(
     val database: ShowsDatabase,
-    private val onReviewsLoadedCallback: (Unit) -> Unit,
-    private val onShowLoadedCallback: (Unit) -> Unit,
-    private val onReviewAddedCallback: (Unit) -> Unit
+    private val onReviewsLoadedCallback: () -> Unit,
+    private val onShowLoadedCallback: () -> Unit,
+    private val onReviewAddedCallback: () -> Unit,
+    private val onErrorCallback: (errorType: ErrorType) -> Unit
 ) : ViewModel() {
 
     private val showLiveData: MutableLiveData<Show> by lazy {
@@ -53,12 +56,12 @@ class ShowDetailsViewModel(
                         ) {
                             if (response.isSuccessful) {
                                 showLiveData.postValue(response.body()?.show)
-                                onShowLoadedCallback(Unit)
+                                onShowLoadedCallback()
                             }
                         }
 
                         override fun onFailure(call: Call<GetShowResponse>, t: Throwable) {
-                            //TODO: Proper api failure handling
+                            onErrorCallback(ErrorType.API)
                         }
 
                     })
@@ -66,7 +69,8 @@ class ShowDetailsViewModel(
                 showLiveData.postValue(
                     database.showDao().getShow(showId).convertToModel()
                 )
-                onShowLoadedCallback(Unit)
+                onShowLoadedCallback()
+                onErrorCallback(ErrorType.NO_INTERNET)
             }
         }
     }
@@ -82,21 +86,22 @@ class ShowDetailsViewModel(
                         ) {
                             if (response.isSuccessful) {
                                 reviewsLiveData.postValue(response.body()?.reviews)
-                                onReviewsLoadedCallback(Unit)
+                                onReviewsLoadedCallback()
                             }
                         }
 
                         override fun onFailure(call: Call<ListReviewsResponse>, t: Throwable) {
-                            //TODO: Proper api failure handling
+                            onErrorCallback(ErrorType.API)
                         }
 
                     })
             } else {
+
                 reviewsLiveData.postValue(
                     database.reviewDao().getReviewsForShow(showId.toInt())
                         .map { it.convertToModel() }
                 )
-                onReviewsLoadedCallback(Unit)
+                onReviewsLoadedCallback()
             }
         }
     }
@@ -120,12 +125,12 @@ class ShowDetailsViewModel(
                                         response.body()!!.review.convertToEntity()
                                     )
                                 }
-                                onReviewAddedCallback(Unit)
+                                onReviewAddedCallback()
                             }
                         }
 
                         override fun onFailure(call: Call<CreateReviewResponse>, t: Throwable) {
-                            //TODO: Proper api failure handling
+                            onErrorCallback(ErrorType.API)
                         }
                     })
             } else {
@@ -140,11 +145,11 @@ class ShowDetailsViewModel(
                             preferenceHelper.getCurrentUser()
                         )
                     )
-                    reviewsLiveData.postValue(
+                    /*reviewsLiveData.postValue(
                         database.reviewDao().getReviewsForShow(showId)
                             .map { it.convertToModel() }
-                    )
-                    onReviewAddedCallback(Unit)
+                    )*/
+                    onReviewAddedCallback()
                 }
             }
         }

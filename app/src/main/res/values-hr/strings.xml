@@ -28,4 +28,8 @@
     <string name="registration_successful">Uspješna registracija!</string>
     <string name="no_internet">Nemate vezu s internetom!</string>
     <string name="top_rated">Najbolje ocjenjeni</string>
+    <string name="ok">Ok</string>
+    <string name="error">Greška</string>
+    <string name="api_error">Error retrieving data, entering offline mode.</string>
+    <string name="internal_error">Internal error</string>
 </resources>

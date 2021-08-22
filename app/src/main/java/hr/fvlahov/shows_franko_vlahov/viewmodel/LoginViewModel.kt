@@ -17,10 +17,14 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.concurrent.Executors
 
-class LoginViewModel(preferenceHelper: PreferenceHelper) : ViewModel() {
-    private val preferenceHelper = preferenceHelper
-    private val loginResultLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
+class LoginViewModel(
+    private val preferenceHelper: PreferenceHelper,
+    private val onLoginResponse: () -> Unit
+) : ViewModel() {
 
+    private val loginResultLiveData: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>()
+    }
 
     fun getLoginResultLiveData(): LiveData<Boolean> {
         return loginResultLiveData
@@ -35,15 +39,18 @@ class LoginViewModel(preferenceHelper: PreferenceHelper) : ViewModel() {
                     response: Response<LoginResponse>
                 ) {
                     loginResultLiveData.value = response.isSuccessful
-                    preferenceHelper.saveLoginData(
-                        accessToken = response.headers()[ApiModule.ACCESS_TOKEN],
-                        client = response.headers()[ApiModule.CLIENT],
-                        uid = response.headers()[ApiModule.UID],
-                    )
+                    if(response.isSuccessful){
+                        preferenceHelper.saveLoginData(
+                            accessToken = response.headers()[ApiModule.ACCESS_TOKEN],
+                            client = response.headers()[ApiModule.CLIENT],
+                            uid = response.headers()[ApiModule.UID],
+                        )
 
-                    preferenceHelper.saveCurrentUser(
-                        response.body()?.user
-                    )
+                        preferenceHelper.saveCurrentUser(
+                            response.body()?.user
+                        )
+                    }
+                    onLoginResponse()
                 }
 
                 override fun onFailure(call: Call<LoginResponse>, t: Throwable) {

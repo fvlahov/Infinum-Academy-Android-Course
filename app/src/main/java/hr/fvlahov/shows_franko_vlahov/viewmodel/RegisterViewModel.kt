@@ -10,7 +10,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class RegisterViewModel : ViewModel() {
+class RegisterViewModel(
+    private val onRegisterResponse: () -> Unit
+) : ViewModel() {
     private val registrationResultLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
 
     fun getRegistrationResultLiveData(): LiveData<Boolean> {
@@ -25,10 +27,12 @@ class RegisterViewModel : ViewModel() {
                     response: Response<RegisterResponse>
                 ) {
                     registrationResultLiveData.value = response.isSuccessful
+                    onRegisterResponse()
                 }
 
                 override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
                     registrationResultLiveData.value = false
+                    onRegisterResponse()
                 }
 
             })

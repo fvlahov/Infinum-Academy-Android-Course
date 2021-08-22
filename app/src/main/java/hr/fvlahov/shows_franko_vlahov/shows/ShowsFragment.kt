@@ -4,16 +4,16 @@ import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.OvershootInterpolator
 import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -40,7 +40,10 @@ import java.lang.Exception
 class ShowsFragment : BaseFragment() {
 
     private val viewModel: ShowViewModel by viewModels {
-        ShowViewModelFactory((activity?.application as ShowsApp).showsDatabase) { onShowsLoaded() }
+        ShowViewModelFactory(
+            (activity?.application as ShowsApp).showsDatabase,
+            { onShowsLoaded() },
+            { errorType -> showErrorDialog(errorType) })
     }
 
     private var showsVisibility = false
@@ -144,7 +147,9 @@ class ShowsFragment : BaseFragment() {
 
 
     private fun onShowsLoaded() {
-        binding.progressLinear.hide()
+        Handler(Looper.getMainLooper()).post {
+            binding.progressLinear.hide()
+        }
     }
 
 

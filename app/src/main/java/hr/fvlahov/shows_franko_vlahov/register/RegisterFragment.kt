@@ -1,5 +1,6 @@
 package hr.fvlahov.shows_franko_vlahov.register
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,24 +9,31 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import hr.fvlahov.shows_franko_vlahov.R
+import hr.fvlahov.shows_franko_vlahov.core.BaseFragment
 import hr.fvlahov.shows_franko_vlahov.databinding.FragmentRegisterBinding
 import hr.fvlahov.shows_franko_vlahov.login.LoginFragmentDirections
 import hr.fvlahov.shows_franko_vlahov.login.MIN_EMAIL_LENGTH
 import hr.fvlahov.shows_franko_vlahov.login.MIN_PASSWORD_LENGTH
+import hr.fvlahov.shows_franko_vlahov.preferences.PreferenceHelper
 import hr.fvlahov.shows_franko_vlahov.shows.ShowsFragmentDirections
 import hr.fvlahov.shows_franko_vlahov.utils.NavigationHelper
 import hr.fvlahov.shows_franko_vlahov.utils.ValidationHelper
+import hr.fvlahov.shows_franko_vlahov.viewmodel.LoginViewModel
+import hr.fvlahov.shows_franko_vlahov.viewmodel.LoginViewModelFactory
 import hr.fvlahov.shows_franko_vlahov.viewmodel.RegisterViewModel
+import hr.fvlahov.shows_franko_vlahov.viewmodel.RegisterViewModelFactory
 
 
-class RegisterFragment : Fragment() {
+class RegisterFragment : BaseFragment() {
     private var _binding: FragmentRegisterBinding? = null
 
     private val binding get() = _binding!!
 
-    private val viewModel: RegisterViewModel by viewModels()
+    private lateinit var viewModel: RegisterViewModel
+    private lateinit var viewModelFactory: RegisterViewModelFactory
 
     private var emailErrorMessage = ""
     private var passwordErrorMessage = ""
@@ -38,13 +46,28 @@ class RegisterFragment : Fragment() {
 
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
 
+        viewModelFactory =
+            RegisterViewModelFactory(
+            ) { hideProgressIndicator() }
+        viewModel = ViewModelProvider(this, viewModelFactory)
+            .get(RegisterViewModel::class.java)
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        hideProgressIndicator()
+
         NavigationHelper().setNavigationVisibility(activity, false)
         initRegisterButton()
         initInputs()
 
         initViewModel()
+    }
 
-        return binding.root
+    private fun hideProgressIndicator() {
+        binding.progressCircular.hide()
     }
 
     private fun initViewModel() {
@@ -108,6 +131,7 @@ class RegisterFragment : Fragment() {
     }
 
     private fun attemptRegister() {
+        binding.progressCircular.show()
         binding.apply {
             viewModel.register(
                 inputEmail.text.toString(),

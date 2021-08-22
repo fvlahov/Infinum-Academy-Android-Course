@@ -2,11 +2,12 @@ package hr.fvlahov.shows_franko_vlahov.show_details
 
 import android.app.Activity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -15,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import hr.fvlahov.shows_franko_vlahov.R
 import hr.fvlahov.shows_franko_vlahov.ShowsApp
+import hr.fvlahov.shows_franko_vlahov.core.BaseFragment
 import hr.fvlahov.shows_franko_vlahov.databinding.DialogAddReviewBinding
 import hr.fvlahov.shows_franko_vlahov.databinding.FragmentShowDetailsBinding
 import hr.fvlahov.shows_franko_vlahov.item_decorators.SimpleDividerItemDecoration
@@ -24,7 +26,7 @@ import hr.fvlahov.shows_franko_vlahov.preferences.PreferenceHelper
 import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowDetailsViewModel
 import hr.fvlahov.shows_franko_vlahov.viewmodel.ShowDetailsViewModelFactory
 
-class ShowDetailsFragment : Fragment() {
+class ShowDetailsFragment : BaseFragment() {
 
     private var _binding: FragmentShowDetailsBinding? = null
     private val binding get() = _binding!!
@@ -38,7 +40,8 @@ class ShowDetailsFragment : Fragment() {
             (activity?.application as ShowsApp).showsDatabase,
             { },
             { hideProgressBar() },
-            { hideProgressBar() }
+            { hideProgressBar() },
+            { errorType -> showErrorDialog(errorType) }
         )
     }
 
@@ -74,7 +77,9 @@ class ShowDetailsFragment : Fragment() {
     }
 
     private fun hideProgressBar() {
-        binding.progressLinear.hide()
+        Handler(Looper.getMainLooper()).post {
+            binding.progressLinear.hide()
+        }
     }
 
     private fun updateShow(show: Show) {

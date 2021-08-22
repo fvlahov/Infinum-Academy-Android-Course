@@ -1,9 +1,11 @@
 package hr.fvlahov.shows_franko_vlahov.viewmodel
 
 import android.content.SharedPreferences
+import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import hr.fvlahov.shows_franko_vlahov.core.ErrorType
 import hr.fvlahov.shows_franko_vlahov.database.ShowsDatabase
 import hr.fvlahov.shows_franko_vlahov.login.USER_EMAIL
 import hr.fvlahov.shows_franko_vlahov.login.USER_ID
@@ -22,7 +24,8 @@ import java.util.concurrent.Executors
 
 class ShowViewModel(
     val database: ShowsDatabase,
-    private val onShowsLoadCallback: (Unit) -> Unit
+    private val onShowsLoadCallback: () -> Unit,
+    private val onErrorCallback: (errorType: ErrorType) -> Unit
 ) : ViewModel() {
 
     private val showsLiveData: MutableLiveData<List<Show>> by lazy {
@@ -56,7 +59,6 @@ class ShowViewModel(
     fun getAllShows() {
         Executors.newSingleThreadExecutor().execute {
             if (NetworkChecker().checkInternetConnectivity()) {
-                //TODO: Repository pattern -> handles retrieving data based on internet connection
 
                 ApiModule.retrofit.getAllShows()
                     .enqueue(object : Callback<ListShowsResponse> {
@@ -66,19 +68,20 @@ class ShowViewModel(
                         ) {
                             if (response.isSuccessful) {
                                 showsLiveData.postValue(response.body()?.shows)
-                                onShowsLoadCallback(Unit)
+                                onShowsLoadCallback()
                             }
                         }
 
                         override fun onFailure(call: Call<ListShowsResponse>, t: Throwable) {
-                            //TODO: Handle retrieving all shows error
+                            onErrorCallback(ErrorType.API)
                         }
 
                     })
             } else {
                 showsLiveData.postValue(
                     database.showDao().getAllShows().map { it.convertToModel() })
-                onShowsLoadCallback(Unit)
+                onShowsLoadCallback()
+                onErrorCallback(ErrorType.NO_INTERNET)
             }
         }
     }
@@ -94,15 +97,19 @@ class ShowViewModel(
                         ) {
                             if (response.isSuccessful) {
                                 showsLiveData.postValue(response.body()?.shows)
-                                onShowsLoadCallback(Unit)
+                                onShowsLoadCallback()
                             }
                         }
 
                         override fun onFailure(call: Call<ListTopRatedShowsResponse>, t: Throwable) {
-                            //TODO: Handle retrieving all shows error
+                            onErrorCallback(ErrorType.API)
                         }
 
                     })
+            }
+            else{
+                onShowsLoadCallback()
+                onErrorCallback(ErrorType.NO_INTERNET)
             }
         }
     }
@@ -117,11 +124,11 @@ class ShowViewModel(
                     response: Response<LoginResponse>
                 ) {
                     profileLiveData.postValue(response.body()?.user)
-                    onShowsLoadCallback(Unit)
+                    onShowsLoadCallback()
                 }
 
                 override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                    throw t
+                    onErrorCallback(ErrorType.API)
                 }
 
             })
