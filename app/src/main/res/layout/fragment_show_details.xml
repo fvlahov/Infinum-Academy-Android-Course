@@ -38,14 +38,21 @@
                 style="@style/TextLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="56dp"
                 android:textColor="@color/black"
                 tools:text="The Office" />
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progressLinear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="56dp"
+                android:indeterminate="true" />
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/imageShowImage"
                 android:layout_width="match_parent"
-                android:layout_height="350dp"
+                android:layout_height="wrap_content"
                 android:scaleType="fitCenter"
                 tools:src="@drawable/ic_office" />
 
@@ -94,7 +101,7 @@
                 android:nestedScrollingEnabled="false"
                 android:paddingBottom="48dp"
                 tools:itemCount="3"
-                tools:listitem="@layout/item_review" />
+                tools:listitem="@layout/view_review_item" />
 
             <TextView
                 android:id="@+id/labelNoReviews"

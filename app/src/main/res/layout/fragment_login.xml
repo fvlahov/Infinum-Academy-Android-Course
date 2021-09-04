@@ -4,8 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/purple_background"
+    android:background="?attr/colorPrimary"
     tools:context=".login.LoginFragment">
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progressCircular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/labelShows"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:indeterminate="true"
+        app:indicatorColor="@color/white"
+        style="CircularProgressIndicator.White"/>
 
     <ImageView
         android:id="@+id/imageTopLeft"
@@ -37,15 +49,15 @@
 
     <TextView
         android:id="@+id/labelShows"
+        style="@style/TextLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="@string/shows"
-        style="@style/TextLarge"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="@id/imageTriangle"
-        app:layout_constraintTop_toTopOf="@id/imageTriangle"
-        app:layout_constraintStart_toEndOf="@id/imageTriangle" />
+        app:layout_constraintStart_toEndOf="@id/imageTriangle"
+        app:layout_constraintTop_toTopOf="@id/imageTriangle" />
 
     <TextView
         android:id="@+id/labelLogin"
@@ -57,7 +69,7 @@
         android:textColor="@color/white"
         android:textSize="@dimen/largerText"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/buttonLogin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -94,8 +106,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:textColor="@color/white"
-            android:text="zdravko.mamic@hotmail.com"/>
+            android:textColor="@color/white" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -117,21 +128,58 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
-            android:textColor="@color/white"
-            android:text="nesjecamsestvarno"/>
+            android:textColor="@color/white" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/checkboxRememberMe"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="@dimen/defaultLeftRightPadding"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:buttonTint="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/containerPassword"
+        tools:checked="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/remember_me"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/checkboxRememberMe"
+        app:layout_constraintStart_toEndOf="@id/checkboxRememberMe"
+        app:layout_constraintTop_toTopOf="@id/checkboxRememberMe" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonLogin"
         style="@style/WhiteButton"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/defaultLeftRightPadding"
+        android:layout_marginEnd="@dimen/defaultLeftRightPadding"
+        android:layout_marginBottom="8dp"
+        android:enabled="false"
+        android:text="@string/login"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toTopOf="@id/buttonRegister"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonRegister"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/defaultLeftRightPadding"
         android:layout_marginEnd="@dimen/defaultLeftRightPadding"
         android:layout_marginBottom="@dimen/defaultTopBottomPadding"
-        android:enabled="false"
-        android:text="@string/login"
+        android:background="@color/transparent"
+        android:text="@string/register"
         android:textAllCaps="false"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

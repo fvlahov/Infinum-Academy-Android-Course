@@ -2,30 +2,65 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintShows"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingHorizontal="@dimen/defaultLeftRightPadding"
     tools:context=".shows.ShowsFragment">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/buttonLogout"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progressLinear"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:indeterminate="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/barrier" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/buttonShowProfile"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_marginTop="24dp"
-        android:background="@drawable/ic_baseline_exit_to_app_24"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:layout_marginEnd="@dimen/defaultLeftRightPadding"
+        android:padding="0dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_krv_nije_voda"
+        app:cornerRadius="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/labelShows"
         style="@style/TextLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/activity_shows_view_padding_top"
+        android:layout_marginStart="@dimen/defaultLeftRightPadding"
+        android:layout_marginTop="32dp"
         android:text="@string/shows"
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/buttonShowProfile" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chipTopRated"
+        style="@style/com.google.android.material.chip.Chip.Shows"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/defaultLeftRightPadding"
+        android:checkable="true"
+        android:checked="false"
+        android:text="@string/top_rated"
+        app:chipBackgroundColor="@drawable/chip_color_selector_inverted"
+        app:chipIcon="@drawable/ic_heart"
+        app:chipIconSize="16dp"
+        app:chipIconTint="@drawable/chip_color_selector"
+        app:chipStartPadding="8dp"
+        app:chipStrokeColor="@drawable/chip_color_selector"
+        app:layout_constraintBottom_toBottomOf="@id/labelShows"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/labelShows"
+        tools:checked="true" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonShowHideEmptyState"
@@ -36,20 +71,37 @@
         android:padding="16dp"
         android:text="Show/hide empty state"
         android:textColor="@color/white"
+        android:visibility="gone"
         app:cornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="@id/labelShows"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/labelShows" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerShows"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="labelShows,buttonShowHideEmptyState" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="40dp"
-        android:paddingBottom="88dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/labelShows"
-        tools:listitem="@layout/view_show_item" />
+        app:layout_constraintTop_toBottomOf="@id/barrier">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerShows"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="@dimen/defaultLeftRightPadding"
+            tools:listitem="@layout/view_show_item" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/groupEmptyShows"
@@ -77,4 +129,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/imageEmptyShows" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabChangeLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="@dimen/defaultLeftRightPadding"
+        android:src="@drawable/ic_layout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

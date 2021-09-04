@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="in_order_to_continue_please_log_in">Kako biste nastavili, prijavite se.</string>
+    <string name="login">Prijava</string>
+    <string name="password">Lozinka</string>
+    <string name="welcome">Pozdrav</string>
+    <string name="shows">Serije</string>
+    <string name="your_shows_are_not_showing_get_it">Nemate serija!</string>
+    <string name="reviews">Recenzije</string>
+    <string name="write_a_review">Napiši recenziju</string>
+    <string name="numberOfReviewsAndAverage">%1$s recenzija, %2$s prosjek</string>
+    <string name="no_reviews_yet">Nema recenzija još.</string>
+    <string name="confirm">Potvrdi</string>
+    <string name="comment">Komentar</string>
+    <string name="please_add_a_rating">Ocjena je obavezna!</string>
+    <string name="remember_me">Zapamti me</string>
+    <string name="change_profile_photo">Promijeni profilnu sliku</string>
+    <string name="logout">Odjava</string>
+    <string name="are_you_sure">Jeste sigurni?</string>
+    <string name="are_you_sure_logout">Jeste sigurni da se želite odjaviti?</string>
+    <string name="settings">Postavke</string>
+    <string name="register">Registracija</string>
+    <string name="enter_valid_email">Unesite valjan email!</string>
+    <string name="email_password_dont_match">Email i lozinka ne postoje</string>
+    <string name="passwords_dont_match">Lozinke se ne podudaraju!</string>
+    <string name="user_exists">Korisnik već postoji!</string>
+    <string name="repeat_password">Ponovi lozinku</string>
+    <string name="registration_successful">Uspješna registracija!</string>
+    <string name="no_internet">Nemate vezu s internetom!</string>
+    <string name="top_rated">Najbolje ocjenjeni</string>
+    <string name="ok">Ok</string>
+    <string name="error">Greška</string>
+    <string name="api_error">Error retrieving data, entering offline mode.</string>
+    <string name="internal_error">Internal error</string>
+</resources>

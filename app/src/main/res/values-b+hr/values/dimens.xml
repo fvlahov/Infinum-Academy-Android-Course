@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="defaultLeftRightPadding">24dp</dimen>
+    <dimen name="defaultTopBottomPadding">32dp</dimen>
+    <dimen name="btn_corner_radius">24dp</dimen>
+    <dimen name="activity_login_view_margin_top">16dp</dimen>
+    <dimen name="activity_shows_view_padding_top">64dp</dimen>
+    <dimen name="largerText">32sp</dimen>
+    <dimen name="show_card_top_left_right_padding">4dp</dimen>
+    <dimen name="show_card_bottom_padding">16dp</dimen>
+</resources>
