@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    app:startDestination="@id/fragment_login">
+
+    <fragment
+        android:id="@+id/fragment_login"
+        android:name="hr.fvlahov.shows_franko_vlahov.login.LoginFragment"
+        tools:layout="@layout/fragment_login">
+
+        <action
+            android:id="@+id/action_login_to_shows"
+            app:destination="@id/fragment_shows" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_shows"
+        android:name="hr.fvlahov.shows_franko_vlahov.shows.ShowsFragment"
+        tools:layout="@layout/fragment_shows">
+
+        <action
+            android:id="@+id/action_shows_to_show_details"
+            app:destination="@id/fragment_show_details" />
+
+        <action
+            android:id="@+id/action_shows_to_login"
+            app:destination="@id/fragment_login"
+            app:popUpTo="@id/fragment_login"
+            app:popUpToInclusive="true"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_show_details"
+        android:name="hr.fvlahov.shows_franko_vlahov.show_details.ShowDetailsFragment"
+        tools:layout="@layout/fragment_show_details">
+
+        <argument
+            android:name="show"
+            app:argType="hr.fvlahov.shows_franko_vlahov.model.Show"/>
+    </fragment>
+</navigation>

@@ -6,42 +6,54 @@ import android.graphics.Color
 import android.graphics.drawable.ShapeDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.recyclerview.widget.DividerItemDecoration
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import hr.fvlahov.shows_franko_vlahov.R
-import hr.fvlahov.shows_franko_vlahov.databinding.ActivityShowDetailsBinding
 import hr.fvlahov.shows_franko_vlahov.databinding.DialogAddReviewBinding
+import hr.fvlahov.shows_franko_vlahov.databinding.FragmentShowDetailsBinding
 import hr.fvlahov.shows_franko_vlahov.model.Review
 import hr.fvlahov.shows_franko_vlahov.model.Show
 import hr.fvlahov.shows_franko_vlahov.shows.ReviewsAdapter
 
-class ShowDetailsActivity : AppCompatActivity() {
+class ShowDetailsFragment : Fragment() {
 
     companion object {
-        private const val EXTRA_SHOW = "EXTRA_SHOW"
-
-        fun buildIntent(activity: Activity, show: Show): Intent {
-            val intent = Intent(activity, ShowDetailsActivity::class.java)
-            intent.putExtra(EXTRA_SHOW, show)
-            return intent
+        fun newInstance(show: Show): ShowDetailsFragment {
+            val args = Bundle()
+            args.putSerializable("EXTRA_SHOW", show);
+            val fragment = ShowDetailsFragment()
+            fragment.arguments = args
+            return fragment
         }
     }
 
-    private lateinit var binding: ActivityShowDetailsBinding
+    private var _binding: FragmentShowDetailsBinding? = null
+    private val binding get() = _binding!!
+
+    private val args: ShowDetailsFragmentArgs by navArgs()
+
     private lateinit var show: Show
     private var reviewsAdapter: ReviewsAdapter? = null
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentShowDetailsBinding.inflate(layoutInflater, container, false)
 
-        binding = ActivityShowDetailsBinding.inflate(layoutInflater)
+        return binding.root
+    }
 
-        setContentView(binding.root)
-
-        show = intent.extras?.getSerializable(EXTRA_SHOW) as Show
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        show = args.show
 
         initViews()
         initToolbar()
@@ -50,27 +62,16 @@ class ShowDetailsActivity : AppCompatActivity() {
 
     private fun initToolbar() {
         binding.toolbar.setNavigationOnClickListener {
-            this.finish()
+            findNavController().navigateUp()
+/*            findNavController().navigate(R.id.action_show_details_to_shows)*/
         }
     }
 
     private fun initReviewsRecycler() {
         binding.recyclerReviews.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         reviewsAdapter = ReviewsAdapter(show.reviews)
         binding.recyclerReviews.adapter = reviewsAdapter
-
-        //Item decorator
-/*        val divider = DividerItemDecoration(
-            this,
-            DividerItemDecoration.VERTICAL
-        )
-
-        divider.setDrawable(ShapeDrawable().apply {
-            intrinsicHeight = resources.getDimensionPixelOffset(R.dimen.recyclerDividerWeight)
-            paint.color = Color.GRAY
-        })
-        binding.recyclerReviews.addItemDecoration(divider)*/
 
         updateReviewsAndRatingsVisibility()
     }
@@ -116,7 +117,7 @@ class ShowDetailsActivity : AppCompatActivity() {
     }
 
     private fun onWriteReviewClicked() {
-        val dialog = BottomSheetDialog(this)
+        val dialog = BottomSheetDialog(this.requireContext())
 
         val bottomSheetBinding = DialogAddReviewBinding.inflate(layoutInflater)
         dialog.setContentView(bottomSheetBinding.root)
@@ -155,5 +156,10 @@ class ShowDetailsActivity : AppCompatActivity() {
         val averageRating = show.reviews.map { review -> review.rating }.average()
 
         return averageRating.toFloat()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
